@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>藍 N1 記憶帳 — 2024/12 問題9</title>
+<style>
+  :root{
+    --bg:#eceef2; --paper:#fff; --ink:#1b232e; --sub:#71787f; --line:#e2e5ea;
+    --indigo:#213a6b; --indigoDim:#3a5691; --indigoSoft:#e9edf6;
+    --green:#1f8f63; --greenSoft:#e6f4ec; --red:#c1553c; --redSoft:#f8ebe6;
+    --amber:#c58a24; --amberSoft:#f8f0dd; --stampNew:#cfd4dc;
+    --serif:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS Mincho",serif;
+    --sans:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);
+    padding:20px 14px calc(40px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  .wrap{max-width:460px;margin:0 auto}
+  button{font-family:var(--sans);cursor:pointer}
+  .serif{font-family:var(--serif)}
+  .muted{color:var(--sub)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08)}
+  .row{display:flex;align-items:center}
+  .fade{animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){.fade{animation:none}*{transition:none!important}}
+
+  ruby{ruby-align:center}
+  rt{font-family:var(--sans);font-size:.5em;font-weight:400;color:var(--sub);letter-spacing:0}
+
+  .brand{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--indigo);letter-spacing:1px}
+  .brand small{font-size:15px;color:var(--sub);font-family:var(--sans);letter-spacing:0}
+  .sub13{font-size:13px;color:var(--sub);margin-top:2px}
+  .link{background:none;border:none;color:var(--sub);font-size:12px;display:flex;align-items:center;gap:5px;padding:4px}
+
+  .map{padding:18px 18px 16px}
+  .map .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .lbl{font-size:13px;color:var(--sub);letter-spacing:.5px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .tile{aspect-ratio:1/1;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);
+    font-family:var(--serif);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative}
+  .tile.done{border-color:var(--indigo);background:var(--indigo);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+  .tile .dot{position:absolute;bottom:4px;width:14px;height:3px;border-radius:2px}
+  .tile .pg2{position:absolute;top:3px;right:4px;font-size:9px;color:var(--sub);font-family:var(--sans)}
+  .tile.done .pg2{color:rgba(255,255,255,.6)}
+  .bar{height:6px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:14px}
+  .bar > i{display:block;height:100%;background:var(--indigo);transition:width .5s}
+  .legend{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--sub);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+  .modes{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+  .mode{display:flex;align-items:center;gap:14px;text-align:left;width:100%;border-radius:16px;padding:15px 16px;border:none}
+  .mode .ic{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;flex-shrink:0}
+  .mode .tt{flex:1}
+  .mode .tt b{display:block;font-size:16px}
+  .mode .tt span{display:block;font-size:12.5px;margin-top:2px}
+  .mode.primary{background:var(--indigo);color:#fff;box-shadow:0 2px 8px rgba(33,58,107,.25)}
+  .mode.primary .ic{background:rgba(255,255,255,.15)}
+  .mode.primary .tt span{color:rgba(255,255,255,.8)}
+  .mode.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+  .mode.ghost .ic{background:var(--indigoSoft)}
+  .mode.ghost .tt span{color:var(--sub)}
+  .mode:disabled{opacity:.6;cursor:default}
+  .foot{text-align:center;margin-top:18px;font-size:11.5px;color:var(--sub);line-height:1.5}
+
+  .tb{display:flex;align-items:center;justify-content:space-between}
+  .chip-sec{font-size:12px;color:var(--indigo);background:var(--indigoSoft);padding:4px 10px;border-radius:20px;font-weight:600}
+  .count{font-size:13px;color:var(--sub);min-width:44px;text-align:right}
+  .tbbar{height:5px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:10px}
+  .tbbar > i{display:block;height:100%;background:var(--indigo);transition:width .35s}
+
+  .pcard{padding:20px 20px;margin-top:12px}
+  .plabel{font-size:12px;color:var(--sub);letter-spacing:1px;margin-bottom:8px}
+  .pg{margin:0 0 9px;font-family:var(--serif);font-size:16px;line-height:2.0;color:var(--ink)}
+  .pg:last-child{margin-bottom:0}
+  .qtext{font-size:15px;font-weight:700;margin-top:18px;line-height:1.65;font-family:var(--serif)}
+
+  .opts{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+  .opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:var(--paper);
+    border:1.5px solid var(--line);border-radius:13px;padding:12px 14px;transition:background .15s,border-color .15s}
+  .opt .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;
+    background:var(--indigoSoft);color:var(--indigo);font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .opt .txt{font-family:var(--serif);font-size:16px;line-height:1.65}
+  .opt.correct{background:var(--greenSoft);border-color:var(--green)}
+  .opt.wrong{background:var(--redSoft);border-color:var(--red)}
+  .opt.dim{opacity:.9}
+  .opt.dim .txt{color:var(--sub)}
+  .opt.locked{cursor:default}
+  .optnote{font-size:12.5px;color:var(--sub);padding:6px 8px 0 46px;line-height:1.5}
+  .optnote.bad{color:var(--red)}
+
+  .expl{margin-top:16px;background:var(--indigoSoft);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .keybox{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:10px 12px}
+  .keybox .klbl{font-size:11px;color:var(--amber);letter-spacing:1px;font-weight:700}
+  .keybox .kjp{font-family:var(--serif);font-size:15px;color:var(--ink);margin-top:4px;line-height:1.8}
+  .keybox .kvi{font-size:12.5px;color:var(--sub);margin-top:4px;line-height:1.55}
+  .expl .ln{font-size:13.5px;line-height:1.62;margin-top:9px}
+  .expl .ln b{color:var(--indigo)}
+  .expl hr{border:none;border-top:1px solid var(--line);margin:11px 0}
+  .cta{margin-top:16px;width:100%;background:var(--indigo);color:#fff;border:none;border-radius:14px;
+    padding:14px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line);font-weight:600}
+
+  .flip{margin-top:12px;perspective:1200px}
+  .flip .inner{position:relative;min-height:360px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .flip.on .inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;
+    background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08);
+    padding:20px 18px;display:flex;flex-direction:column;justify-content:flex-start;overflow:auto}
+  .face.back{transform:rotateY(180deg);background:var(--indigo);border:none;justify-content:center}
+  .face .kick{font-size:12px;color:var(--sub);letter-spacing:1px;margin-bottom:10px}
+  .face .fpg{font-family:var(--serif);font-size:13.5px;line-height:1.9;margin:0 0 7px}
+  .face .fq{font-family:var(--serif);font-size:14.5px;font-weight:700;margin-top:10px;line-height:1.55}
+  .face .tap{margin-top:12px;font-size:12px;color:var(--sub)}
+  .face.back .kick{color:rgba(255,255,255,.7)}
+  .face.back .ans{font-family:var(--serif);font-size:16px;color:#fff;line-height:1.7}
+  .face.back hr{border:none;border-top:1px solid rgba(255,255,255,.25);margin:12px 0}
+  .face.back .ln{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.55;margin-top:6px}
+  .face.back .ln b{color:#fff}
+  .marks{display:flex;gap:10px;margin-top:16px}
+  .mark{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:14px;font-size:15px;font-weight:700}
+  .mark.no{background:var(--redSoft);color:var(--red);border:1.5px solid var(--red)}
+  .mark.yes{background:var(--greenSoft);color:var(--green);border:1.5px solid var(--green)}
+
+  .done{text-align:center;padding-top:20px}
+  .score{font-family:var(--serif);font-size:56px;font-weight:700;color:var(--indigo);margin-top:6px;line-height:1}
+  .score small{font-size:26px;color:var(--sub)}
+  .wrongbox{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:22px;text-align:left}
+  .wrongrow{display:flex;align-items:center;gap:10px;font-size:14px}
+  .wrongrow .n{width:24px;height:24px;border-radius:7px;background:var(--redSoft);color:var(--red);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+
+<script>
+/* ============ PASSAGES (問題9 · 「1から4」の文章) ============ */
+var PASSAGES = {
+ p1:{ label:"(1)",
+  text:
+   "育児[いくじ]といえば、たいていは母親[ははおや]によってなされると思[おも]われています。（中略[ちゅうりゃく]）\n"+
+   "ところがライオンはちょっと違[ちが]います。同[おな]じ群[む]れのライオンは、そろって出産[しゅっさん]する傾向[けいこう]があり、育児[いくじ]も群[む]れの雌[めす]全員[ぜんいん]が協力[きょうりょく]して行[おこな]うのです。赤[あか]ちゃんは生[う]まれて一[いっ]か月[げつ]あまりは物陰[ものかげ]に隠[かく]され、母親[ははおや]だけで育[そだ]てられます。しかし、歩[ある]けるようになると、群[む]れに連[つ]れてこられて共同[きょうどう]生活[せいかつ]が始[はじ]まります。\n"+
+   "ライオンの群[む]れには複数[ふくすう]の大人[おとな]の雌[めす]がいますから、それらの子[こ]どもたちが集[あつ]まって、大所帯[おおじょたい]となります。集[あつ]められた子[こ]どもたちは、自分[じぶん]の母親[ははおや]以外[いがい]のライオンの乳[ちち]も飲[の]むことができ、群[む]れの全員[ぜんいん]の保護[ほご]を受[う]けることができます。捕食獣[ほしょくじゅう]であるライオンは、子育[こそだ]て中[ちゅう]も獲物[えもの]狩[が]りに出[で]かけなければなりません。母親[ははおや]一頭[いっとう]で子育[こそだ]てをしている場合[ばあい]には、外出[がいしゅつ]中[ちゅう]にハイエナなどに子[こ]どもが捕食[ほしょく]される危険[きけん]があります。しかし、共同[きょうどう]育児[いくじ]をして誰[だれ]かが子[こ]どものそばに残[のこ]っていれば安心[あんしん]です。\n"+
+   "若[わか]い雌[めす]ライオンは敏捷[びんしょう]ですが、子育[こそだ]ての経験[けいけん]に乏[とぼ]しく、失敗[しっぱい]することもよくあります。それに比[くら]べ、壮年期[そうねんき]になったライオンは経験[けいけん]豊富[ほうふ]で態度[たいど]もどっしりとして子育[こそだ]ても上手[じょうず]です。年長[ねんちょう]の雌[めす]がまとめて面倒[めんどう]を見[み]た方[ほう]が育児[いくじ]はうまくいくかもしれません。反面[はんめん]、若[わか]いライオンの敏捷性[びんしょうせい]は狩[か]りでは有利[ゆうり]に働[はたら]くでしょう。ライオンは狩[か]りも共同[きょうどう]で行[おこな]い、獲物[えもの]はみんなで食[た]べますから年老[としお]いて狩[か]りに参加[さんか]できなくても、食事[しょくじ]をとることができるのです。\n"+
+   "ライオンたちは、明確[めいかく]な分業[ぶんぎょう]とまではいえなくても、うまく育児[いくじ]と狩[か]りを全員[ぜんいん]が協力[きょうりょく]することで、問題[もんだい]を解決[かいけつ]しています。",
+  trans:"Nói đến nuôi con, người ta thường cho rằng phần lớn do mẹ đảm nhận. (lược) Nhưng sư tử thì hơi khác: các con trong cùng đàn có xu hướng sinh cùng đợt, và việc nuôi con do tất cả sư tử cái trong đàn cùng hợp sức. Con non sau sinh khoảng hơn một tháng được giấu nơi kín, chỉ do mẹ nuôi; nhưng khi biết đi thì được đưa vào đàn, bắt đầu sống chung. Trong đàn có nhiều con cái trưởng thành nên lũ con tụ lại thành 'đại gia đình', có thể bú sữa cả những con cái không phải mẹ mình và được cả đàn bảo vệ. Là thú săn mồi, sư tử dù đang nuôi con vẫn phải đi săn; nếu chỉ một mình mẹ nuôi, khi ra ngoài con có nguy cơ bị linh cẩu ăn thịt — nhưng nuôi chung, luôn có ai đó ở lại thì yên tâm. Sư tử cái trẻ nhanh nhẹn nhưng thiếu kinh nghiệm nuôi con, hay hỏng việc; trong khi con ở độ sung sức thì giàu kinh nghiệm, điềm tĩnh, nuôi con khéo — để con lớn tuổi chăm lo gộp lại có khi suôn sẻ hơn. Mặt khác, sự nhanh nhẹn của con trẻ lại lợi khi đi săn. Sư tử săn theo kiểu hợp tác, con mồi cả đàn cùng ăn, nên dù già không săn được vẫn có cái ăn. Dẫu chưa đến mức phân công rạch ròi, cả đàn vẫn giải quyết vấn đề bằng cách khéo hợp sức cả nuôi con lẫn đi săn." },
+ p2:{ label:"(2)",
+  text:
+   "仕事柄[しごとがら]、私[わたし]は取材[しゅざい]を受[う]けることが多[おお]いが、あるとき取材[しゅざい]をしている人[ひと]から、人[ひと]と話[はな]すのが苦手[にがて]だと打[う]ち明[あ]けられたことがある。取材中[しゅざいちゅう]は自然[しぜん]な感[かん]じで会話[かいわ]が進[すす]んでいたこともあって少[すこ]し驚[おどろ]いたが、そう言[い]われてみるとたしかに少[すこ]し緊張[きんちょう]しているように見[み]えなくもない。ただ、取材[しゅざい]を受[う]けている私[わたし]の立場[たちば]からすると、必[かなら]ずしも悪[わる]い印象[いんしょう]は受[う]けなかった。\n"+
+   "むしろ緊張感[きんちょうかん]が相手[あいて]に対[たい]する配慮[はいりょ]のように感[かん]じられて、良[よ]い感[かん]じで話[はな]をすることができた。\n"+
+   "私[わたし]たちは、あることが苦手[にがて]だと思[おも]うと、うまくできていないように思[おも]える面[めん]に目[め]を向[む]けてしまう。スムーズに言葉[ことば]が出[で]てこなかったことや、話[はなし]が行[い]きつ戻[もど]りつしてしまったことなどが気[き]になって、自分[じぶん]を責[せ]める気持[きも]ちになる。\n"+
+   "しかし、スムーズに言葉[ことば]が出[で]なかったことで、会話[かいわ]にためが出[で]てきていることもある。相手[あいて]は、その時間的[じかんてき]すきまの時[とき]に、考[かんが]えをまとめたり、振[ふ]り返[かえ]りをしたりできたりする。トントン拍子[びょうし]に会話[かいわ]が進[すす]まないことで、話[はな]している内容[ないよう]を多面的[ためんてき]に考[かんが]えることができたりもする。\n"+
+   "思[おも]うように会話[かいわ]できないときは、失敗[しっぱい]ではなく、話[はなし]を深[ふか]めるように無意識[むいしき]に心[こころ]が手助[てだす]けしているようにも思[おも]える。（中略[ちゅうりゃく]）失敗[しっぱい]のように思[おも]えることには、それなりに意味[いみ]があるのだろう。\n"+
+   "欠点[けってん]のように思[おも]えることも、見方[みかた]を変[か]えるとじつは長所[ちょうしょ]だということが少[すく]なくない。自分[じぶん]に対[たい]して多面的[ためんてき]な見方[みかた]ができると、気持[きも]ちが楽[らく]になるし、本来[ほんらい]の力[ちから]を発揮[はっき]できるようになる。",
+  trans:"Do tính chất công việc, tôi hay được phỏng vấn; có lần người đang phỏng vấn thổ lộ rằng họ ngại nói chuyện với người khác. Vì lúc đó cuộc trò chuyện vẫn diễn ra khá tự nhiên nên tôi hơi bất ngờ, song ngẫm lại thì quả có vẻ họ hơi căng thẳng thật. Tuy vậy, từ vị trí người được phỏng vấn, tôi không hẳn thấy ấn tượng xấu. Trái lại, sự căng thẳng ấy khiến tôi cảm thấy như một sự để tâm đến đối phương, và tôi trò chuyện được dễ chịu. Chúng ta, khi nghĩ mình kém ở điều gì, thường chỉ nhìn vào những mặt có vẻ làm chưa tốt: cứ bận lòng vì lời không ra trơn tru, vì câu chuyện lặp tới lặp lui, rồi tự trách mình. Nhưng việc lời nói không trôi chảy đôi khi lại tạo 'khoảng lặng' cho cuộc trò chuyện; đối phương trong khoảng trống ấy có thể sắp xếp suy nghĩ, nhìn lại. Trò chuyện không ro ro lại giúp nghĩ về nội dung một cách nhiều chiều. Khi không nói được như ý, có lẽ đó không phải thất bại, mà như thể trong vô thức tâm trí đang trợ giúp để câu chuyện sâu hơn. (lược) Điều tưởng là thất bại hẳn cũng có ý nghĩa riêng. Điều ngỡ là khuyết điểm, đổi cách nhìn lại hóa ra là ưu điểm — chuyện đó không hiếm. Nhìn bản thân nhiều chiều thì lòng nhẹ đi và phát huy được sức mạnh vốn có." },
+ p3:{ label:"(3)",
+  text:
+   "（以下[いか]は、商品[しょうひん]パッケージのデザイナーが書[か]いた文章[ぶんしょう]である。）\n"+
+   "大量[たいりょう]生産品[せいさんひん]のように全国[ぜんこく]に流通[りゅうつう]し、多[おお]くの方々[かたがた]にご利用[りよう]いただく商品[しょうひん]の場合[ばあい]には、必[かなら]ずマーケティング調査[ちょうさ]が行[おこな]われます。とくにパッケージのリニューアル時[じ]には、従来[じゅうらい]よりも売[う]り上[あ]げが落[お]ちてしまっては大変[たいへん]なので、より慎重[しんちょう]に行[おこな]われます。\n"+
+   "ただそういう場合[ばあい]、必[かなら]ず「今[いま]までの方[ほう]が良[よ]かった」という意見[いけん]が過半[かはん]を占[し]めます。ですがメーカーにとっては、定番[ていばん]となっている商品[しょうひん]をどうしてもリニューアルしなければならないタイミングが必[かなら]ずやってきます。それは、競合[きょうごう]他社[たしゃ]が売[う]り上[あ]げを伸[の]ばしたり、技術[ぎじゅつ]開発[かいはつ]に伴[ともな]い商品[しょうひん]そのものが改善[かいぜん]されたり、いろいろな理由[りゆう]でそれは必[かなら]ずやってくる。ところがマーケティング調査[ちょうさ]してみると「変[か]えない方[ほう]がいい」という結果[けっか]が出[で]てしまう。今[いま]までのファンはその商品[しょうひん]に愛着[あいちゃく]をもっているわけですから、リニューアルに大賛成[だいさんせい]してくれるわけがないのです。ですが、どうしても新[あたら]しくしなければならない。\n"+
+   "私[わたし]はこういった時[とき]、これまでの財産[ざいさん]をうまく生[い]かして、今[いま]までのファンがある程度[ていど]を許容[きょよう]してくれれば、それは大成功[だいせいこう]だと考[かんが]えています。最初[さいしょ]は少[すこ]し許[ゆる]せない部分[ぶぶん]があったとしても、これが一年[いちねん]、二年[にねん]経[た]つと、新[あたら]しいデザインも見慣[みな]れてくる。したがってマーケティング調査[ちょうさ]の数字[すうじ]は、そういう時間軸[じかんじく]も考[かんが]えたうえで見[み]る必要[ひつよう]があります。",
+  trans:"(Dưới đây là bài viết của một nhà thiết kế bao bì sản phẩm.) Với những sản phẩm lưu thông toàn quốc như hàng sản xuất đại trà, được đông đảo người dùng, bao giờ cũng có khảo sát marketing; đặc biệt khi đổi mới bao bì, vì để doanh thu tụt so với trước là chuyện lớn nên càng thận trọng. Chỉ có điều, khi ấy ý kiến 'kiểu cũ tốt hơn' luôn chiếm quá bán. Nhưng với nhà sản xuất, thời điểm buộc phải làm mới một sản phẩm đã thành 'ruột' chắc chắn sẽ đến — vì đối thủ tăng doanh số, vì sản phẩm được cải tiến theo công nghệ, vì đủ lý do, nó nhất định đến. Thế mà khảo sát lại ra kết quả 'đừng đổi thì hơn'. Fan lâu nay vốn gắn bó với sản phẩm nên chẳng đời nào tán thành làm mới. Nhưng dù vậy vẫn buộc phải đổi. Những lúc như thế, tôi cho rằng nếu khéo tận dụng 'gia tài' đã có và được fan cũ chấp nhận ở mức độ nào đó thì đã là thành công lớn. Dù ban đầu có đôi chỗ chưa chấp nhận được, nhưng một, hai năm trôi qua người ta sẽ quen mắt với thiết kế mới. Vì vậy, con số khảo sát marketing cần được nhìn có tính cả trục thời gian đó." },
+ p4:{ label:"(4)",
+  text:
+   "群馬県[ぐんまけん]の上野村[うえのむら]で暮[く]らすようになって覚[おぼ]えたものの一[ひと]つに「待[ま]つ」という感覚[かんかく]がある。\n"+
+   "たとえばこの村[むら]の農業[のうぎょう]は春[はる]を待[ま]たなければはじまらない。山菜[さんさい]も、茸[きのこ]も、それが出[で]てくる時期[じき]を待[ま]たなければけっして手[て]には入[はい]らない。木材[もくざい]として利用[りよう]するのなら、木[き]を切[き]るのは、森[もり]の木々[きぎ]が活動[かつどう]を低下[ていか]させる秋[あき]から冬[ふゆ]がくるのを待[ま]つ必要[ひつよう]がある。実[じつ]に多[おお]くのことが、村[むら]では「待[ま]つ」ことからはじまっていく。\n"+
+   "それが、自然[しぜん]とともに働[はたら]き、暮[く]らすということなのであろう。自然[しぜん]の力[ちから]を借[か]りようとすれば、自然[しぜん]がつくる、それに適[てき]したときがくるのを待[ま]たなければならない。といってもそれは、のんびりした暮[く]らし方[かた]とばかりもいえないのである。なぜかなら、ときを待[ま]つ以上[いじょう]、逆[ぎゃく]にそのときを逃[のが]してしまったらうまくいかなくなる。田植[たう]えのとき、草取[くさと]りのとき、稲刈[いねか]りのとき…。村[むら]の暮[く]らしには、逃[のが]してはいけないときがたえずやってくる。\n"+
+   "ときを待[ま]つ暮[く]らしにとっては、人間[にんげん]の意志[いし]は万能[ばんのう]ではない。それよりも自然[しぜん]という他者[たしゃ]の動[うご]きの方[ほう]が重要[じゅうよう]で、人間[にんげん]の意志[いし]は、自然[しぜん]の動[うご]きをうまく活用[かつよう]する範囲内[はんいない]でしか有効[ゆうこう]ではない。だから、自然[しぜん]と結[むす]ばれ、ときを待[ま]ちながら働[はたら]き暮[く]らしてきた村[むら]の人[ひと]たちは、人間[にんげん]関係[かんけい]のなかでも同[おな]じような感覚[かんかく]を育[はぐく]んだ。人間[にんげん]関係[かんけい]においても自分[じぶん]の一方的[いっぽうてき]な意志[いし]は万能[ばんのう]ではない。人々[ひとびと]の動[うご]きを理解[りかい]しながら、ちょうどよいタイミングがくるのを待[ま]って、そのときを逃[のが]さずに働[はたら]きかけていく。それが村[むら]の人[ひと]たちの人間[にんげん]関係[かんけい]のつくり方[かた]だった。自然[しぜん]との関係[かんけい]のなかで学[まな]んだことが人間[にんげん]同士[どうし]の関係[かんけい]のなかでもいかされていたのである。",
+  trans:"Một trong những điều tôi học được khi sống ở làng Ueno (tỉnh Gunma) là cảm giác 'chờ đợi'. Chẳng hạn nghề nông của làng không thể bắt đầu nếu chưa chờ mùa xuân; rau rừng, nấm — không chờ đúng mùa chúng mọc thì tuyệt nhiên không có; muốn lấy gỗ thì việc đốn cây phải chờ thu sang đông, khi cây rừng giảm hoạt động. Thực tế, rất nhiều việc ở làng đều bắt đầu từ chuyện 'chờ'. Đó có lẽ chính là lao động và sống cùng thiên nhiên. Muốn mượn sức thiên nhiên thì phải chờ đến lúc thiên nhiên tạo ra thời điểm thích hợp. Nhưng nói vậy không có nghĩa là lối sống nhàn tản: bởi một khi đã chờ thời, ngược lại nếu để lỡ thời điểm ấy thì hỏng việc. Lúc cấy, lúc làm cỏ, lúc gặt… cuộc sống ở làng liên tục có những thời điểm không được bỏ lỡ. Với lối sống chờ thời, ý chí con người không vạn năng; quan trọng hơn là chuyển động của 'kẻ khác' mang tên thiên nhiên, và ý chí con người chỉ hữu hiệu trong phạm vi khéo tận dụng được chuyển động ấy. Vì thế, người làng — gắn với thiên nhiên, vừa chờ thời vừa lao động sinh sống — cũng nuôi dưỡng cảm giác tương tự trong quan hệ con người: ý chí một chiều của bản thân cũng không vạn năng; vừa thấu hiểu chuyển động của mọi người, vừa chờ đúng thời điểm rồi không bỏ lỡ mà ra tay tác động. Đó là cách người làng tạo dựng quan hệ con người — điều học từ quan hệ với thiên nhiên được vận dụng cả trong quan hệ giữa người với người." }
+};
+
+/* ============ DATA (問題9 · Q49–56) ============ */
+var DATA = [
+ {id:"q49",no:49,sec:"読解",pid:"p1",
+  question:"ライオンの子育[こそだ]てについて、筆者[ひっしゃ]はどのように述[の]べているか。",
+  options:[
+   {t:"生後[せいご]すぐに、群[む]れの中[なか]で雌[めす]が交代[こうたい]で育[そだ]てる",note:"Sai — mới sinh thì bị GIẤU nơi kín, chỉ mẹ nuôi, chưa vào đàn"},
+   {t:"生後[せいご]一[いっ]か月[げつ]あまり過[す]ぎると、経験[けいけん]豊富[ほうふ]な年長[ねんちょう]の雌[めす]が育[そだ]てる",note:"Sai — sau 1 tháng vào đàn là CẢ ĐÀN cái cùng nuôi, không riêng con lớn tuổi"},
+   {t:"歩[ある]けるようになるまで、群[む]れの中[なか]で母親[ははおや]が育[そだ]てる",note:"Sai — trước khi biết đi bị giấu nơi kín, không phải “trong đàn”"},
+   {t:"歩[ある]けるようになると、群[む]れの雌[めす]が協力[きょうりょく]して育[そだ]てる"}
+  ],correct:3,
+  key:"歩[ある]けるようになると、群[む]れに連[つ]れてこられて共同[きょうどう]生活[せいかつ]が始[はじ]まります／育児[いくじ]も群[む]れの雌[めす]全員[ぜんいん]が協力[きょうりょく]して行[おこな]う",
+  keyTrans:"Khi biết đi, con được đưa vào đàn, bắt đầu sống chung; việc nuôi con do tất cả sư tử cái trong đàn hợp sức.",
+  point:"Trước khi biết đi: giấu kín, chỉ mẹ nuôi. Sau khi biết đi: vào đàn, cả đàn cái cùng nuôi → đáp án 4."},
+ {id:"q50",no:50,sec:"読解",pid:"p1",
+  question:"共同[きょうどう]生活[せいかつ]の利点[りてん]について、筆者[ひっしゃ]はどのように述[の]べているか。",
+  options:[
+   {t:"壮年期[そうねんき]のライオンの経験[けいけん]を育児[いくじ]と狩[か]りに生[い]かすことができる",note:"Lệch — kinh nghiệm con sung sức dùng cho NUÔI CON; đi săn lại nhờ sự nhanh nhẹn của con trẻ"},
+   {t:"年齢[ねんれい]に応[おう]じて役割[やくわり]を分担[ぶんたん]することで、育児[いくじ]と狩[か]りが両立[りょうりつ]できる"},
+   {t:"群[む]れの中[なか]での役割[やくわり]分担[ぶんたん]が明確[めいかく]になり、個々[ここ]のライオンの負担[ふたん]が減[へ]る",note:"Trái ý — bài nói “chưa đến mức phân công rạch ròi (明確な分業とまではいえない)”"},
+   {t:"若[わか]いライオンが育児[いくじ]も狩[か]りも経験[けいけん]することで、どんな役割[やくわり]もできるようになる",note:"Không nêu — không nói con trẻ làm được mọi vai trò"}
+  ],correct:1,
+  key:"年長[ねんちょう]の雌[めす]が…育児[いくじ]はうまくいく／若[わか]いライオンの敏捷性[びんしょうせい]は狩[か]りでは有利[ゆうり]",
+  keyTrans:"Con cái lớn tuổi lo nuôi con thì suôn sẻ; sự nhanh nhẹn của con trẻ lại lợi cho đi săn.",
+  point:"Chia vai theo độ tuổi (trẻ→săn, lớn tuổi→nuôi con) nên nuôi con và đi săn cùng ổn → đáp án 2."},
+
+ {id:"q51",no:51,sec:"読解",pid:"p2",
+  question:"取材[しゅざい]をしている人[ひと]からうまく言葉[ことば]が出[で]てこないことについて、筆者[ひっしゃ]はどのように考[かんが]えているか。",
+  options:[
+   {t:"取材[しゅざい]を受[う]けている人[ひと]は、間[ま]を取[と]りながら話[はな]さなければならないという気持[きも]ちにさせられる",note:"Không nêu — không nói người được PV buộc phải ngắt nhịp để nói"},
+   {t:"取材[しゅざい]を受[う]けている人[ひと]は、考[かんが]えをまとめたり振[ふ]り返[かえ]ったりしながら内容[ないよう]が深[ふか]められる"},
+   {t:"取材[しゅざい]を受[う]けている人[ひと]は、内容[ないよう]をまとめて分[わ]かりやすく伝[つた]えるための準備[じゅんび]ができる",note:"Sai — không phải “chuẩn bị để truyền đạt dễ hiểu”"},
+   {t:"取材[しゅざい]を受[う]けている人[ひと]は、自分[じぶん]のせいだと考[かんが]えて自[みずか]ら会話[かいわ]を進[すす]めようとする",note:"Sai — đó là xu hướng tự trách chung, không phải điều tác giả nói về “khoảng lặng”"}
+  ],correct:1,
+  key:"相手[あいて]は、その時間的[じかんてき]すきまの時[とき]に、考[かんが]えをまとめたり、振[ふ]り返[かえ]りをしたりできたりする",
+  keyTrans:"Đối phương (người được PV), trong khoảng trống ấy, có thể sắp xếp suy nghĩ và nhìn lại.",
+  point:"Lời PV không trơn tru tạo “khoảng lặng” → người được PV tranh thủ sắp xếp/nhìn lại, nội dung sâu hơn → đáp án 2."},
+ {id:"q52",no:52,sec:"読解",pid:"p2",
+  question:"筆者[ひっしゃ]の考[かんが]えに合[あ]うのはどれか。",
+  options:[
+   {t:"自分[じぶん]に対[たい]して多面的[ためんてき]な見方[みかた]ができれば、ほかの人[ひと]の失敗[しっぱい]や欠点[けってん]にも寛容[かんよう]になる",note:"Không nêu — bài nói cách nhìn BẢN THÂN, không nói “khoan dung với người khác”"},
+   {t:"欠点[けってん]だと思[おも]えることを改善[かいぜん]できれば、自分[じぶん]の能力[のうりょく]が発揮[はっき]できるようになる",note:"Sai — không phải “cải thiện” khuyết điểm, mà ĐỔI CÁCH NHÌN"},
+   {t:"本来[ほんらい]の力[ちから]を発揮[はっき]するためには、自分[じぶん]の欠点[けってん]ではなく長所[ちょうしょ]を探[さが]すのがいい",note:"Lệch — không phải “tìm ưu điểm thay cho khuyết điểm”, mà THẤY khuyết điểm chính là ưu điểm"},
+   {t:"失敗[しっぱい]や欠点[けってん]だと思[おも]っていても、捉[とら]え方[かた]次第[しだい]で長所[ちょうしょ]になり得[え]る"}
+  ],correct:3,
+  key:"欠点[けってん]のように思[おも]えることも、見方[みかた]を変[か]えるとじつは長所[ちょうしょ]だということが少[すく]なくない",
+  keyTrans:"Điều tưởng là khuyết điểm, đổi cách nhìn lại hóa ra là ưu điểm — không hiếm.",
+  point:"Luận điểm chính: khuyết điểm/thất bại — tùy cách nhìn — có thể thành ưu điểm → đáp án 4."},
+
+ {id:"q53",no:53,sec:"読解",pid:"p3",
+  question:"こういった時[とき]とは、どのような時[とき]か。",
+  options:[
+   {t:"パッケージの変更[へんこう]に伴[ともな]って、ファンが商品[しょうひん]への愛着[あいちゃく]を失[うしな]った時[とき]",note:"Sai — fan vẫn GẮN BÓ (愛着), chưa mất"},
+   {t:"パッケージの変更[へんこう]を望[のぞ]まないファンが多[おお]いのに、変更[へんこう]せざるをえない時[とき]"},
+   {t:"新[あたら]しいファンを獲得[かくとく]するには、パッケージの変更[へんこう]が不可欠[ふかけつ]だと分[わ]かった時[とき]",note:"Không nêu — không nói “để giành fan mới”"},
+   {t:"ファンの賛否[さんぴ]が分[わ]からない状況[じょうきょう]で、パッケージを変更[へんこう]しなければならない時[とき]",note:"Sai — thái độ fan RÕ (phản đối), không phải “không rõ”"}
+  ],correct:1,
+  key:"今[いま]までのファンは…リニューアルに大賛成[だいさんせい]してくれるわけがない…ですが、どうしても新[あたら]しくしなければならない",
+  keyTrans:"Fan cũ chẳng đời nào tán thành làm mới… nhưng vẫn buộc phải đổi mới.",
+  point:"こういった時 = fan phản đối đổi bao bì nhưng nhà SX vẫn buộc phải đổi → đáp án 2."},
+ {id:"q54",no:54,sec:"読解",pid:"p3",
+  question:"マーケティング調査[ちょうさ]の結果[けっか]について、筆者[ひっしゃ]はどのように考[かんが]えているか。",
+  options:[
+   {t:"一部[いちぶ]の消費者[しょうひしゃ]の意見[いけん]として、うまく生[い]かすべきだ",note:"Không khớp — không nói “ý kiến của một bộ phận”"},
+   {t:"肯定的[こうていてき]な意見[いけん]を積極的[せっきょくてき]に取[と]り入[い]れて商品[しょうひん]開発[かいはつ]に生[い]かすべきだ",note:"Không nêu"},
+   {t:"消費者[しょうひしゃ]の反応[はんのう]が変[か]わっていくことを考慮[こうりょ]して分析[ぶんせき]するべきだ"},
+   {t:"過去[かこ]の結果[けっか]と合[あ]わせて、消費者[しょうひしゃ]の好[この]みの変化[へんか]を読[よ]み取[と]るべきだ",note:"Lệch — không phải “ghép với kết quả quá khứ”, mà xét trục thời gian SAU khi đổi (fan quen dần)"}
+  ],correct:2,
+  key:"マーケティング調査[ちょうさ]の数字[すうじ]は、そういう時間軸[じかんじく]も考[かんが]えたうえで見[み]る必要[ひつよう]があります",
+  keyTrans:"Con số khảo sát cần nhìn có tính cả trục thời gian đó (fan sẽ quen dần sau 1–2 năm).",
+  point:"Phản ứng người tiêu dùng thay đổi theo thời gian (quen mắt dần) → phải phân tích có xét yếu tố đó → đáp án 3."},
+
+ {id:"q55",no:55,sec:"読解",pid:"p4",
+  question:"「待[ま]つ」ことからはじまっていくとあるが、何[なに]を待[ま]つのか。",
+  options:[
+   {t:"自然[しぜん]が豊[ゆた]かさを回復[かいふく]して利用[りよう]できるようになるとき",note:"Không nêu — không nói “thiên nhiên hồi phục độ trù phú”"},
+   {t:"自然[しぜん]を人間[にんげん]の都合[つごう]に合[あ]わせるのに適[てき]したとき",note:"Ngược — con người chờ THEO thiên nhiên, không bắt thiên nhiên theo mình"},
+   {t:"自然[しぜん]の恵[めぐ]みを受[う]けるのに適[てき]した状態[じょうたい]になるとき"},
+   {t:"自然[しぜん]の変化[へんか]が感[かん]じられるようになるとき",note:"Lệch — không phải “cảm nhận được sự thay đổi”, mà chờ đến ĐÚNG LÚC thích hợp để hưởng"}
+  ],correct:2,
+  key:"自然[しぜん]がつくる、それに適[てき]したときがくるのを待[ま]たなければならない（春[はる]・山菜[さんさい]・茸[きのこ]・木[き]を切[き]る秋冬[あきふゆ]）",
+  keyTrans:"Phải chờ đến lúc thiên nhiên tạo ra thời điểm thích hợp (xuân, mùa rau rừng/nấm, thu-đông để đốn cây).",
+  point:"Chờ đến khi điều kiện thích hợp ĐỂ HƯỞNG ân huệ của thiên nhiên (gieo trồng, hái lượm, lấy gỗ) → đáp án 3."},
+ {id:"q56",no:56,sec:"読解",pid:"p4",
+  question:"筆者[ひっしゃ]によると、村[むら]の人[ひと]たちの人間[にんげん]関係[かんけい]はどのようにつくられたか。",
+  options:[
+   {t:"自然[しぜん]との関係[かんけい]と同様[どうよう]に、相手[あいて]の行動[こうどう]を見[み]ながら時機[じき]を捉[とら]えて働[はたら]きかける"},
+   {t:"自然[しぜん]の変化[へんか]を捉[とら]えるように、相手[あいて]の変化[へんか]を待[ま]って働[はたら]きかける",note:"Thiếu — không chỉ “chờ”, mà còn chủ động nắm đúng thời cơ để ra tay"},
+   {t:"自然[しぜん]の影響[えいきょう]を受[う]けやすい人々[ひとびと]の動[うご]きを理解[りかい]し、タイミングよく働[はたら]きかける",note:"Đọc sai — “người dễ bị thiên nhiên ảnh hưởng” không phải ý bài"},
+   {t:"自然[しぜん]の変化[へんか]を待[ま]つのと同様[どうよう]に、相手[あいて]からの働[はたら]きかけを焦[あせ]らずに待[ま]つ",note:"Sai — không chỉ chờ bị động; người làng CHỦ ĐỘNG tác động đúng lúc"}
+  ],correct:0,
+  key:"人々[ひとびと]の動[うご]きを理解[りかい]しながら、ちょうどよいタイミングがくるのを待[ま]って、そのときを逃[のが]さずに働[はたら]きかけていく",
+  keyTrans:"Vừa hiểu chuyển động của mọi người, vừa chờ đúng thời điểm, rồi không bỏ lỡ mà ra tay tác động.",
+  point:"Giống quan hệ với thiên nhiên: quan sát đối phương, nắm đúng thời cơ rồi CHỦ ĐỘNG tác động (không chỉ chờ) → đáp án 1."}
+];
+
+var MASTER = 4;
+
+/* ============ STORAGE ============ */
+var KEY = "n1-2024-12-mondai-9";
+var mem = {};
+function loadProgress(cb){
+  var p = {};
+  try { var raw = localStorage.getItem(KEY); if (raw) p = JSON.parse(raw); }
+  catch(e){ p = mem; }
+  cb(p || {});
+}
+function saveProgress(p){ mem = p; try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(e){} }
+
+/* ============ STATE ============ */
+var S = { prog:{}, view:"home", order:[], pos:0, sel:null, revealed:false, flipped:false, results:[] };
+var app = document.getElementById("app");
+
+function nextBox(box, ok){ return ok ? Math.min(5,(box||0)+1) : 1; }
+function stampColor(box){ if(!box) return "var(--stampNew)"; if(box>=MASTER) return "var(--indigo)"; if(box===3) return "var(--amber)"; return "var(--red)"; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function furi(s){ s = esc(s); return s.replace(/([\u4e00-\u9fff々〆ヶ]+)\[([\u3040-\u30ffー]+)\]/g,'<ruby>$1<rt>$2</rt></ruby>'); }
+function passageHTML(p, cls){ return p.text.split("\n").map(function(x){ return '<p class="'+(cls||"pg")+'">'+furi(x)+'</p>'; }).join(""); }
+
+function updateItem(id, ok){
+  var cur = S.prog[id] || {box:0,seen:0,correct:0,wrong:0};
+  S.prog[id] = { box: nextBox(cur.box,ok), seen:cur.seen+1, correct:cur.correct+(ok?1:0), wrong:cur.wrong+(ok?0:1) };
+  saveProgress(S.prog);
+}
+function mastered(){ var n=0; DATA.forEach(function(d){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)>=MASTER) n++; }); return n; }
+function weakIdx(){ var r=[]; DATA.forEach(function(d,i){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)<MASTER) r.push(i); }); return r; }
+
+/* ============ ICONS ============ */
+var IC = {
+  check:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';},
+  x:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';},
+  back:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';},
+  fwd:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';},
+  reset:function(c){return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>';},
+  quiz:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';},
+  cards:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="16" rx="2"/><path d="M7 5V3.5A1.5 1.5 0 0 1 8.5 2H19a2 2 0 0 1 2 2v13"/></svg>';},
+  focus:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>';}
+};
+
+/* ============ RENDER: HOME ============ */
+function renderHome(){
+  var m = mastered(), weak = weakIdx(), pct = Math.round(m/DATA.length*100);
+  var tiles = DATA.map(function(d,i){
+    var box = (S.prog[d.id]&&S.prog[d.id].box)||0, done = box>=MASTER, c = stampColor(box);
+    var dot = (!done && box>0) ? '<span class="dot" style="background:'+c+'"></span>' : '';
+    var style = done ? '' : ('color:'+c);
+    return '<button class="tile'+(done?' done':'')+'" data-tile="'+i+'" style="'+style+'">'+d.no+'<span class="pg2">'+PASSAGES[d.pid].label+'</span>'+dot+'</button>';
+  }).join("");
+  var focusEnabled = weak.length>0;
+  app.innerHTML =
+   '<div class="fade">'+
+    '<div class="row" style="justify-content:space-between;align-items:flex-end;margin-bottom:18px">'+
+      '<div><div class="brand">藍 <small>N1 記憶帳</small></div>'+
+      '<div class="sub13">2024/12 · 問題9 · 読解 (Q49–56)</div></div>'+
+      '<button class="link" data-act="reset" title="Xóa tiến độ">'+IC.reset("#71787f")+' Đặt lại</button>'+
+    '</div>'+
+    '<div class="card map">'+
+      '<div class="top"><span class="lbl">BẢN ĐỒ TRÍ NHỚ</span>'+
+        '<span style="font-size:13px"><b style="color:var(--indigo);font-size:16px">'+m+'</b> / '+DATA.length+' đã thuộc</span></div>'+
+      '<div class="grid">'+tiles+'</div>'+
+      '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="legend">'+
+        '<span><i class="sw" style="background:var(--stampNew)"></i>Chưa học</span>'+
+        '<span><i class="sw" style="background:var(--red)"></i>Còn yếu</span>'+
+        '<span><i class="sw" style="background:var(--amber)"></i>Gần thuộc</span>'+
+        '<span><i class="sw" style="background:var(--indigo)"></i>Đã thuộc</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="modes">'+
+      modeBtn("primary","quiz",IC.quiz("#fff"),"Luyện đề","Đọc 4 đoạn (mỗi đoạn 2 câu), xem câu chốt + dịch",false)+
+      modeBtn("ghost","flash",IC.cards("#213a6b"),"Ôn nhanh","Lật lại 8 câu: câu hỏi ↔ câu chốt + đáp án",false)+
+      modeBtn("ghost","focus",IC.focus(focusEnabled?"#c1553c":"#71787f"),
+        focusEnabled?("Ôn câu yếu ("+weak.length+")"):"Ôn câu yếu",
+        focusEnabled?"Chỉ ôn lại những câu bạn còn sai":"Tuyệt vời — chưa có câu nào cần ôn thêm",
+        !focusEnabled)+
+    '</div>'+
+    '<div class="foot">Mỗi đoạn có 2 câu hỏi (nhãn (1)–(4) ở góc ô). Đọc kỹ rồi chọn. Chạm ô để ôn riêng.</div>'+
+   '</div>';
+
+  app.querySelectorAll("[data-tile]").forEach(function(b){ b.addEventListener("click",function(){ startFlash([parseInt(b.getAttribute("data-tile"),10)]); }); });
+  bind("[data-act=reset]", function(){
+    if (typeof window!=="undefined" && window.confirm && !window.confirm("Xóa toàn bộ tiến độ đã lưu?")) return;
+    S.prog={}; saveProgress({}); renderHome();
+  });
+  bind("[data-mode=quiz]", startQuiz);
+  bind("[data-mode=flash]", function(){ startFlash(DATA.map(function(_,i){return i;})); });
+  var fb = app.querySelector("[data-mode=focus]");
+  if (fb && focusEnabled) fb.addEventListener("click", function(){ startFlash(weak); });
+}
+function modeBtn(kind,mode,icon,title,sub,disabled){
+  var ig = kind==="primary"?"rgba(255,255,255,.85)":"#213a6b";
+  var arrow = disabled?"":IC.fwd(ig);
+  return '<button class="mode '+kind+'" data-mode="'+mode+'"'+(disabled?" disabled":"")+'>'+
+    '<span class="ic">'+icon+'</span>'+
+    '<span class="tt"><b>'+title+'</b><span>'+sub+'</span></span>'+arrow+'</button>';
+}
+
+/* ============ RENDER: QUIZ ============ */
+function renderQuiz(){
+  var item = DATA[S.order[S.pos]];
+  var p = PASSAGES[item.pid];
+  var pct = Math.round((S.pos + (S.revealed?1:0))/S.order.length*100);
+  var opts = item.options.map(function(o,i){
+    var cls="opt", noteHTML="";
+    if(S.revealed){
+      cls+=" locked";
+      if(i===item.correct){ cls+=" correct"; }
+      else if(i===S.sel){ cls+=" wrong"; if(o.note) noteHTML='<div class="optnote bad">'+esc(o.note)+'</div>'; }
+      else { cls+=" dim"; if(o.note) noteHTML='<div class="optnote">'+esc(o.note)+'</div>'; }
+    }
+    var nbadge = (S.revealed && i===item.correct) ? IC.check("#1f8f63")
+               : (S.revealed && i===S.sel) ? IC.x("#c1553c") : (i+1);
+    var nStyle = (S.revealed && (i===item.correct||i===S.sel)) ? "background:transparent" : "";
+    return '<div><button class="'+cls+'" data-opt="'+i+'"'+(S.revealed?" disabled":"")+'>'+
+      '<span class="n" style="'+nStyle+'">'+nbadge+'</span>'+
+      '<span class="txt">'+furi(o.t)+'</span></button>'+noteHTML+'</div>';
+  }).join("");
+
+  var expl = S.revealed ? (
+    '<div class="expl fade">'+
+      '<div class="keybox"><div class="klbl">CÂU CHỐT</div>'+
+        '<div class="kjp">'+furi(item.key)+'</div>'+
+        '<div class="kvi">'+esc(item.keyTrans)+'</div></div>'+
+      '<div class="ln"><b>Vì sao · </b>'+esc(item.point)+'</div>'+
+      '<hr><div class="ln"><b>Dịch đoạn · </b>'+esc(p.trans)+'</div>'+
+    '</div>'+
+    '<button class="cta" data-act="next">'+(S.pos+1>=S.order.length?"Xem kết quả":"Câu tiếp theo")+' '+IC.fwd("#fff")+'</button>'
+  ) : "";
+
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="card pcard"><div class="plabel">文章 '+p.label+'</div>'+passageHTML(p)+'</div>'+
+    '<div class="qtext">'+furi(item.question)+'</div>'+
+    '<div class="opts">'+opts+'</div>'+expl+'</div>';
+
+  bind("[data-act=exit]", goHome);
+  if(!S.revealed){
+    app.querySelectorAll("[data-opt]").forEach(function(b){
+      b.addEventListener("click",function(){ answer(parseInt(b.getAttribute("data-opt"),10)); });
+    });
+  }
+  bind("[data-act=next]", nextQuiz);
+}
+
+/* ============ RENDER: FLASH ============ */
+function renderFlash(){
+  var item = DATA[S.order[S.pos]];
+  var p = PASSAGES[item.pid];
+  var pct = Math.round(S.pos/S.order.length*100);
+  var front = '<div class="kick">ĐỌC ĐOẠN '+p.label+' · Câu '+item.no+'</div>'+
+    passageHTML(p,"fpg")+
+    '<div class="fq">'+furi(item.question)+'</div>'+
+    '<div class="tap">Chạm để lật ↺</div>';
+  var back = '<div class="kick">ĐÁP ÁN</div>'+
+    '<div class="ans">'+furi(item.options[item.correct].t)+'</div><hr>'+
+    '<div class="ln"><b>Câu chốt:</b> '+esc(item.keyTrans)+'</div>'+
+    '<div class="ln">'+esc(item.point)+'</div>';
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="flip'+(S.flipped?" on":"")+'" data-act="flip"><div class="inner">'+
+      '<div class="face front">'+front+'</div>'+
+      '<div class="face back">'+back+'</div>'+
+    '</div></div>'+
+    '<div class="marks">'+
+      '<button class="mark no" data-mark="0">'+IC.x("#c1553c")+' Chưa chắc</button>'+
+      '<button class="mark yes" data-mark="1">'+IC.check("#1f8f63")+' Đã nắm</button>'+
+    '</div>'+
+    '<div class="foot">"Chưa chắc" đưa câu về đầu hàng ôn; "Đã nắm" nâng lên gần mức thuộc.</div>'+
+   '</div>';
+
+  bind("[data-act=exit]", goHome);
+  bind("[data-act=flip]", function(){ S.flipped=!S.flipped; app.querySelector(".flip").classList.toggle("on",S.flipped); });
+  app.querySelectorAll("[data-mark]").forEach(function(b){
+    b.addEventListener("click",function(e){ e.stopPropagation(); markFlash(b.getAttribute("data-mark")==="1"); });
+  });
+}
+
+/* ============ RENDER: DONE ============ */
+function renderDone(){
+  var ok = S.results.filter(function(r){return r.ok;}).length;
+  var wrong = S.results.filter(function(r){return !r.ok;});
+  var pct = Math.round(ok/S.results.length*100);
+  var wrongHTML;
+  if(wrong.length===0){
+    wrongHTML = '<div style="color:var(--green);font-weight:700;text-align:center">Trọn vẹn — không sai câu nào! 🎯</div>';
+  } else {
+    wrongHTML = '<div style="font-size:13px;color:var(--sub);margin-bottom:10px">Cần ôn lại '+wrong.length+' câu:</div>'+
+      '<div style="display:flex;flex-direction:column;gap:8px">'+
+      wrong.map(function(r){ var it=DATA[r.idx];
+        return '<div class="wrongrow"><span class="n">'+it.no+'</span>'+
+          '<span class="serif">Đoạn '+PASSAGES[it.pid].label+'</span>'+
+          '<span style="color:var(--sub);font-size:12.5px">· '+esc(it.keyTrans.slice(0,30))+'…</span></div>';
+      }).join("")+'</div>';
+  }
+  app.innerHTML = '<div class="done fade">'+
+    '<div class="lbl" style="letter-spacing:1px">KẾT QUẢ LUYỆN ĐỀ</div>'+
+    '<div class="score">'+ok+'<small>/'+S.results.length+'</small></div>'+
+    '<div class="muted" style="font-size:14px;margin-top:4px">đúng '+pct+'%</div>'+
+    '<div class="wrongbox">'+wrongHTML+'</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+
+      (wrong.length>0?'<button class="cta" data-act="review">Ôn lại '+wrong.length+' câu sai</button>':'')+
+      '<button class="cta ghost" data-act="home">Về trang chủ</button>'+
+    '</div></div>';
+  bind("[data-act=review]", function(){ var w=S.results.filter(function(r){return !r.ok;}).map(function(r){return r.idx;}); startFlash(w.length?w:DATA.map(function(_,i){return i;})); });
+  bind("[data-act=home]", goHome);
+}
+
+/* ============ SHARED ============ */
+function topbar(sec,pos,total,pct){
+  return '<div class="tb"><button class="link" data-act="exit">'+IC.back("#71787f")+' Thoát</button>'+
+    '<span class="chip-sec">問題 '+sec+'</span>'+
+    '<span class="count">'+(pos+1)+' / '+total+'</span></div>'+
+    '<div class="tbbar"><i style="width:'+pct+'%"></i></div>';
+}
+function bind(sel, fn){ var el=app.querySelector(sel); if(el) el.addEventListener("click",fn); }
+
+/* ============ ACTIONS ============ */
+function goHome(){ S.view="home"; renderHome(); }
+function startQuiz(){ S.order=DATA.map(function(_,i){return i;}); S.pos=0; S.sel=null; S.revealed=false; S.results=[]; S.view="quiz"; renderQuiz(); }
+function startFlash(idxs){ S.order=(idxs&&idxs.length)?idxs:DATA.map(function(_,i){return i;}); S.pos=0; S.flipped=false; S.view="flash"; renderFlash(); }
+function answer(i){
+  if(S.revealed) return;
+  var item=DATA[S.order[S.pos]]; var ok=(i===item.correct);
+  S.sel=i; S.revealed=true; updateItem(item.id,ok); S.results.push({idx:S.order[S.pos],ok:ok});
+  renderQuiz();
+}
+function nextQuiz(){
+  if(S.pos+1>=S.order.length){ S.view="done"; renderDone(); return; }
+  S.pos++; S.sel=null; S.revealed=false; renderQuiz();
+}
+function markFlash(ok){
+  var item=DATA[S.order[S.pos]]; updateItem(item.id,ok);
+  if(S.pos+1>=S.order.length){ goHome(); return; }
+  S.pos++; S.flipped=false; renderFlash();
+}
+
+/* ============ BOOT ============ */
+loadProgress(function(p){ S.prog=p||{}; if(typeof location!=="undefined" && location.hash.indexOf("focus")>=0){ var w=weakIdx(); if(w.length){ startFlash(w); return; } } renderHome(); });
+</script>
+</body>
+</html>

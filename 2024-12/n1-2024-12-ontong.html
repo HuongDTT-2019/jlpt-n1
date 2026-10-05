@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>藍 N1 記憶帳 — 総復習 (2024/12)</title>
+<style>
+  :root{
+    --bg:#eceef2; --paper:#fff; --ink:#1b232e; --sub:#71787f; --line:#e2e5ea;
+    --indigo:#213a6b; --indigoDim:#3a5691; --indigoSoft:#e9edf6;
+    --green:#1f8f63; --greenSoft:#e6f4ec; --red:#c1553c; --redSoft:#f8ebe6;
+    --amber:#c58a24; --amberSoft:#f8f0dd; --stampNew:#cfd4dc;
+    --serif:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS Mincho",serif;
+    --sans:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);
+    padding:22px 14px calc(44px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  .wrap{max-width:480px;margin:0 auto}
+  a{text-decoration:none;color:inherit}
+  button{font-family:var(--sans);cursor:pointer}
+  .serif{font-family:var(--serif)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08)}
+
+  .top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px}
+  .brand{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--indigo);letter-spacing:1px}
+  .brand small{font-size:15px;color:var(--sub);font-family:var(--sans);letter-spacing:0}
+  .sub13{font-size:13px;color:var(--sub);margin-top:2px}
+  .home{display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--sub);font-size:12px;padding:4px}
+
+  /* overall ring */
+  .overall{padding:18px;display:flex;align-items:center;gap:18px}
+  .ring{position:relative;width:96px;height:96px;flex-shrink:0}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .ctr b{font-family:var(--serif);font-size:26px;color:var(--indigo);line-height:1}
+  .ring .ctr span{font-size:11px;color:var(--sub);margin-top:2px}
+  .ovr-right{flex:1}
+  .ovr-right .big{font-size:15px;font-weight:700}
+  .seg{margin-top:10px}
+  .seg .srow{display:flex;align-items:center;gap:8px;font-size:12.5px;margin-top:6px}
+  .seg .sname{width:92px;color:var(--sub)}
+  .seg .sbar{flex:1;height:7px;border-radius:4px;background:var(--indigoSoft);overflow:hidden}
+  .seg .sbar i{display:block;height:100%;background:var(--indigo)}
+  .seg .snum{width:40px;text-align:right;color:var(--ink);font-weight:600}
+
+  .sechead{font-size:12px;letter-spacing:1px;color:var(--sub);margin:22px 2px 10px;font-weight:700}
+
+  /* 66-cell map */
+  .mapcard{padding:16px 14px}
+  .grp{margin-bottom:14px}
+  .grp:last-child{margin-bottom:0}
+  .grp .gl{font-size:12px;color:var(--indigo);font-weight:700;margin-bottom:7px;font-family:var(--serif)}
+  .cells{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+  .cell{aspect-ratio:1/1;border-radius:6px;border:1px solid var(--line);background:var(--paper);
+    font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--sub)}
+  .cell.b1,.cell.b2{background:var(--redSoft);border-color:var(--red);color:var(--red)}
+  .cell.b3{background:var(--amberSoft);border-color:var(--amber);color:var(--amber)}
+  .cell.done{background:var(--indigo);border-color:var(--indigo);color:#fff}
+  .legend{display:flex;gap:12px;margin-top:12px;font-size:11px;color:var(--sub);flex-wrap:wrap;justify-content:center}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+  /* weak list */
+  .weak{display:flex;flex-direction:column;gap:9px}
+  .wrow{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .wrow .wn{width:34px;height:34px;border-radius:10px;background:var(--indigoSoft);color:var(--indigo);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--serif);flex-shrink:0}
+  .wrow .wb{flex:1;min-width:0}
+  .wrow .wt{font-size:14px;font-weight:700}
+  .wrow .wm{font-size:12px;color:var(--sub);margin-top:1px}
+  .wrow .wgo{flex-shrink:0;background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:5px}
+  .wrow.clear{opacity:.7}
+  .wrow.clear .wn{background:var(--greenSoft);color:var(--green)}
+  .alldone{text-align:center;color:var(--green);font-weight:700;padding:14px}
+
+  .allbtn{margin-top:12px;width:100%;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:13px;font-size:14px;font-weight:600;text-align:center;display:block}
+  .foot{text-align:center;margin-top:20px;font-size:11.5px;color:var(--sub);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="brand">藍 <small>総復習</small></div>
+      <div class="sub13">2024/12 · Tổng ôn · 66 câu (文字・語彙・文法・読解)</div>
+    </div>
+    <a class="home" href="index.html">← Trang chủ</a>
+  </div>
+
+  <div class="card overall" id="overall"></div>
+
+  <div class="sechead">BẢN ĐỒ TRÍ NHỚ TOÀN ĐỀ</div>
+  <div class="card mapcard" id="map"></div>
+
+  <div class="sechead">ÔN CÂU YẾU TOÀN ĐỀ</div>
+  <div class="weak" id="weak"></div>
+
+  <div class="foot">
+    Mỗi ô là một câu, màu theo mức thuộc đã lưu ở từng buổi. Chạm một ô để mở buổi chứa câu đó.<br>
+    Nút "Ôn câu yếu" nhảy thẳng vào chế độ lật thẻ những câu chưa chắc của buổi.
+  </div>
+</div>
+
+<script>
+var MASTER = 4;
+/* Cấu hình buổi: from–to là số câu, key = localStorage key của buổi */
+var BUOI = [
+ { n:1, file:"n1-2024-12-mondai-1-2.html",   key:"n1-2024-12-mondai-1-2",   from:1,  to:13, sec:"文字語彙", title:"問題1・2 文字・語彙" },
+ { n:2, file:"n1-2024-12-mondai-3-4.html",   key:"n1-2024-12-mondai-3-4",   from:14, to:25, sec:"文字語彙", title:"問題3・4 文字・語彙" },
+ { n:3, file:"n1-2024-12-mondai-5.html",     key:"n1-2024-12-mondai-5",     from:26, to:35, sec:"文法",     title:"問題5 文法" },
+ { n:4, file:"n1-2024-12-mondai-6-7.html",   key:"n1-2024-12-mondai-6-7",   from:36, to:44, sec:"文法",     title:"問題6・7 文法" },
+ { n:5, file:"n1-2024-12-mondai-8.html",     key:"n1-2024-12-mondai-8",     from:45, to:48, sec:"読解",     title:"問題8 読解（短文）" },
+ { n:6, file:"n1-2024-12-mondai-9.html",     key:"n1-2024-12-mondai-9",     from:49, to:56, sec:"読解",     title:"問題9 読解（中文）" },
+ { n:7, file:"n1-2024-12-mondai-10-11.html", key:"n1-2024-12-mondai-10-11", from:57, to:61, sec:"読解",     title:"問題10・11 読解" },
+ { n:8, file:"n1-2024-12-mondai-12-13.html", key:"n1-2024-12-mondai-12-13", from:62, to:66, sec:"読解",     title:"問題12・13 読解" }
+];
+var SECTIONS = [
+ { name:"文字・語彙", vi:"Chữ & Từ vựng", from:1,  to:25 },
+ { name:"文法",       vi:"Ngữ pháp",      from:26, to:44 },
+ { name:"読解",       vi:"Đọc hiểu",      from:45, to:66 }
+];
+
+function loadKey(k){ try{ var r=localStorage.getItem(k); return r?JSON.parse(r):{}; }catch(e){ return {}; } }
+function buoiOf(no){ for(var i=0;i<BUOI.length;i++){ if(no>=BUOI[i].from && no<=BUOI[i].to) return BUOI[i]; } return null; }
+
+/* box của câu số no */
+var CACHE = {};
+function progFor(key){ if(!(key in CACHE)) CACHE[key]=loadKey(key); return CACHE[key]; }
+function boxOf(no){ var b=buoiOf(no); if(!b) return 0; var p=progFor(b.key); var it=p["q"+no]; return (it&&it.box)||0; }
+function cellClass(box){ if(!box) return ""; if(box>=MASTER) return "done"; if(box===3) return "b3"; return "b"+box; }
+
+function countMastered(from,to){ var n=0; for(var i=from;i<=to;i++){ if(boxOf(i)>=MASTER) n++; } return n; }
+
+/* ---- overall ring ---- */
+(function(){
+  var done = countMastered(1,66), total=66, pct=Math.round(done/total*100);
+  var R=42, C=2*Math.PI*R, off=C*(1-done/total);
+  var seg = SECTIONS.map(function(s){
+    var tot=s.to-s.from+1, m=countMastered(s.from,s.to), p=Math.round(m/tot*100);
+    return '<div class="srow"><span class="sname">'+s.vi+'</span>'+
+      '<span class="sbar"><i style="width:'+p+'%"></i></span>'+
+      '<span class="snum">'+m+'/'+tot+'</span></div>';
+  }).join("");
+  document.getElementById("overall").innerHTML =
+    '<div class="ring"><svg width="96" height="96" viewBox="0 0 96 96">'+
+      '<circle cx="48" cy="48" r="42" fill="none" stroke="#e9edf6" stroke-width="9"/>'+
+      '<circle cx="48" cy="48" r="42" fill="none" stroke="#213a6b" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'"/>'+
+      '</svg><div class="ctr"><b>'+pct+'%</b><span>'+done+'/66</span></div></div>'+
+    '<div class="ovr-right"><div class="big">Đã thuộc '+done+' / 66 câu</div>'+
+      '<div class="seg">'+seg+'</div></div>';
+})();
+
+/* ---- 66-cell map ---- */
+(function(){
+  var html = SECTIONS.map(function(s){
+    var cells="";
+    for(var i=s.from;i<=s.to;i++){
+      var b=boxOf(i);
+      cells += '<a class="cell '+cellClass(b)+'" href="'+buoiOf(i).file+'" title="Câu '+i+'">'+i+'</a>';
+    }
+    return '<div class="grp"><div class="gl">'+s.name+' · '+s.vi+'（'+s.from+'–'+s.to+'）</div><div class="cells">'+cells+'</div></div>';
+  }).join("");
+  html += '<div class="legend">'+
+    '<span><i class="sw" style="background:var(--stampNew)"></i>Chưa học</span>'+
+    '<span><i class="sw" style="background:var(--red)"></i>Còn yếu</span>'+
+    '<span><i class="sw" style="background:var(--amber)"></i>Gần thuộc</span>'+
+    '<span><i class="sw" style="background:var(--indigo)"></i>Đã thuộc</span></div>';
+  document.getElementById("map").innerHTML = html;
+})();
+
+/* ---- weak per-buổi ---- */
+(function(){
+  var rows = BUOI.map(function(b){
+    var weak=0, seen=0, tot=b.to-b.from+1;
+    for(var i=b.from;i<=b.to;i++){ var bx=boxOf(i); if(bx>0) seen++; if(bx<MASTER) weak++; }
+    if(weak===0 && seen>0){
+      return '<div class="wrow clear"><div class="wn">'+b.n+'</div>'+
+        '<div class="wb"><div class="wt">'+b.title+'</div><div class="wm">Đã thuộc hết '+tot+' câu 🎯</div></div>'+
+        '<a class="wgo" style="background:var(--greenSoft);color:var(--green)" href="'+b.file+'">Mở</a></div>';
+    }
+    var label = seen===0 ? ('Chưa làm · '+tot+' câu') : ('Còn yếu: '+weak+'/'+tot+' câu');
+    var href = seen===0 ? b.file : (b.file+'#focus');
+    var btn  = seen===0 ? 'Bắt đầu' : 'Ôn câu yếu';
+    return '<a class="wrow" href="'+href+'"><div class="wn">'+b.n+'</div>'+
+      '<div class="wb"><div class="wt">'+b.title+'</div><div class="wm">'+label+'</div></div>'+
+      '<span class="wgo">'+btn+' →</span></a>';
+  }).join("");
+  document.getElementById("weak").innerHTML = rows;
+})();
+</script>
+</body>
+</html>

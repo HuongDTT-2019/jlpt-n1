@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>藍 N1 記憶帳 — 2024/12 問題3・4</title>
+<style>
+  :root{
+    --bg:#eceef2; --paper:#fff; --ink:#1b232e; --sub:#71787f; --line:#e2e5ea;
+    --indigo:#213a6b; --indigoDim:#3a5691; --indigoSoft:#e9edf6;
+    --green:#1f8f63; --greenSoft:#e6f4ec; --red:#c1553c; --redSoft:#f8ebe6;
+    --amber:#c58a24; --amberSoft:#f8f0dd; --stampNew:#cfd4dc;
+    --serif:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS Mincho",serif;
+    --sans:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);
+    padding:20px 14px calc(40px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  .wrap{max-width:460px;margin:0 auto}
+  button{font-family:var(--sans);cursor:pointer}
+  .serif{font-family:var(--serif)}
+  .muted{color:var(--sub)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08)}
+  .row{display:flex;align-items:center}
+  .fade{animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){.fade{animation:none}*{transition:none!important}}
+
+  ruby{ruby-align:center}
+  rt{font-family:var(--sans);font-size:.5em;font-weight:400;color:var(--sub);letter-spacing:0}
+
+  .brand{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--indigo);letter-spacing:1px}
+  .brand small{font-size:15px;color:var(--sub);font-family:var(--sans);letter-spacing:0}
+  .sub13{font-size:13px;color:var(--sub);margin-top:2px}
+  .link{background:none;border:none;color:var(--sub);font-size:12px;display:flex;align-items:center;gap:5px;padding:4px}
+
+  .map{padding:18px 18px 16px}
+  .map .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .lbl{font-size:13px;color:var(--sub);letter-spacing:.5px}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+  .tile{aspect-ratio:1/1;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);
+    font-family:var(--serif);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative}
+  .tile.done{border-color:var(--indigo);background:var(--indigo);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+  .tile .dot{position:absolute;bottom:4px;width:14px;height:3px;border-radius:2px}
+  .bar{height:6px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:14px}
+  .bar > i{display:block;height:100%;background:var(--indigo);transition:width .5s}
+  .legend{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--sub);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+  .modes{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+  .mode{display:flex;align-items:center;gap:14px;text-align:left;width:100%;border-radius:16px;padding:15px 16px;border:none}
+  .mode .ic{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;flex-shrink:0}
+  .mode .tt{flex:1}
+  .mode .tt b{display:block;font-size:16px}
+  .mode .tt span{display:block;font-size:12.5px;margin-top:2px}
+  .mode.primary{background:var(--indigo);color:#fff;box-shadow:0 2px 8px rgba(33,58,107,.25)}
+  .mode.primary .ic{background:rgba(255,255,255,.15)}
+  .mode.primary .tt span{color:rgba(255,255,255,.8)}
+  .mode.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+  .mode.ghost .ic{background:var(--indigoSoft)}
+  .mode.ghost .tt span{color:var(--sub)}
+  .mode:disabled{opacity:.6;cursor:default}
+  .foot{text-align:center;margin-top:18px;font-size:11.5px;color:var(--sub);line-height:1.5}
+
+  .tb{display:flex;align-items:center;justify-content:space-between}
+  .chip{font-size:12px;color:var(--indigo);background:var(--indigoSoft);padding:4px 10px;border-radius:20px;font-weight:600}
+  .count{font-size:13px;color:var(--sub);min-width:44px;text-align:right}
+  .tbbar{height:5px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:10px}
+  .tbbar > i{display:block;height:100%;background:var(--indigo);transition:width .35s}
+
+  .qcard{padding:22px 20px;margin-top:12px}
+  .sent{font-family:var(--serif);font-size:22px;line-height:2.15;color:var(--ink)}
+  .hi{color:var(--indigo);font-weight:700;padding:0 1px}
+  .hi.u{border-bottom:2px solid var(--indigo)}
+  .blank{display:inline-block;min-width:54px;text-align:center;color:var(--indigoDim);font-weight:700;border-bottom:2px solid var(--indigoDim)}
+  .wordq{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--indigo);text-align:center;letter-spacing:1px}
+  .wordq-sub{font-size:12.5px;color:var(--sub);text-align:center;margin-top:8px}
+  .opts{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--paper);
+    border:1.5px solid var(--line);border-radius:13px;padding:13px 14px;transition:background .15s,border-color .15s}
+  .opt.long{align-items:flex-start}
+  .opt.long .n{margin-top:3px}
+  .opt .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;
+    background:var(--indigoSoft);color:var(--indigo);font-size:13px;font-weight:700;flex-shrink:0}
+  .opt .txt{font-family:var(--serif);font-size:19px}
+  .opt.long .txt{font-size:15.5px;line-height:1.85;font-weight:400}
+  .tw{color:var(--indigo);font-weight:700}
+  .opt.correct{background:var(--greenSoft);border-color:var(--green)}
+  .opt.wrong{background:var(--redSoft);border-color:var(--red)}
+  .opt.dim{opacity:.9}
+  .opt.dim .txt{color:var(--sub)}
+  .opt.locked{cursor:default}
+  .optnote{font-size:12.5px;color:var(--sub);padding:6px 8px 0 46px;line-height:1.5}
+  .optnote.bad{color:var(--red)}
+
+  .expl{margin-top:16px;background:var(--indigoSoft);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .expl .rd{font-family:var(--serif);font-size:19px;color:var(--indigo);font-weight:700}
+  .expl .hv{font-size:12.5px;color:var(--indigoDim);margin-top:3px;font-weight:600}
+  .expl .mn{font-size:14px;margin-top:4px}
+  .expl hr{border:none;border-top:1px solid var(--line);margin:11px 0}
+  .expl .ln{font-size:13.5px;line-height:1.62;margin-top:7px}
+  .expl .ln b{color:var(--indigo)}
+  .cta{margin-top:16px;width:100%;background:var(--indigo);color:#fff;border:none;border-radius:14px;
+    padding:14px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line);font-weight:600}
+
+  .flip{margin-top:12px;perspective:1200px}
+  .flip .inner{position:relative;min-height:300px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .flip.on .inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;
+    background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08);
+    padding:24px 22px;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+  .face.back{transform:rotateY(180deg);background:var(--indigo);border:none}
+  .face .kick{font-size:12px;color:var(--sub);letter-spacing:1px;margin-bottom:14px}
+  .face .tap{margin-top:16px;font-size:12px;color:var(--sub)}
+  .face.back .rd{font-family:var(--serif);font-size:24px;color:#fff;font-weight:700}
+  .face.back .hv{font-size:12.5px;color:rgba(255,255,255,.8);margin-top:4px;font-weight:600}
+  .face.back .mn{font-size:15px;color:rgba(255,255,255,.92);margin-top:5px}
+  .face.back hr{border:none;border-top:1px solid rgba(255,255,255,.25);margin:12px 0}
+  .face.back .ln{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.55;margin-top:6px}
+  .face.back .ln .tw{color:#fff}
+  .marks{display:flex;gap:10px;margin-top:16px}
+  .mark{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:14px;font-size:15px;font-weight:700}
+  .mark.no{background:var(--redSoft);color:var(--red);border:1.5px solid var(--red)}
+  .mark.yes{background:var(--greenSoft);color:var(--green);border:1.5px solid var(--green)}
+
+  .done{text-align:center;padding-top:20px}
+  .score{font-family:var(--serif);font-size:56px;font-weight:700;color:var(--indigo);margin-top:6px;line-height:1}
+  .score small{font-size:26px;color:var(--sub)}
+  .wrongbox{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:22px;text-align:left}
+  .wrongrow{display:flex;align-items:center;gap:10px;font-size:14px}
+  .wrongrow .n{width:24px;height:24px;border-radius:7px;background:var(--redSoft);color:var(--red);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+
+<script>
+/* ============ DATA (2024/12 · 問題3・4 · Q14–25) ============
+   type "synonym" (問題3): chọn từ nghĩa gần nhất. type "usage" (問題4): chọn câu dùng từ đúng.
+   Furigana: 漢字[よみ]. Usage: từ đích trong câu bọc 【】 để in đậm. */
+var DATA = [
+ /* ---------- 問題3 · 類義 ---------- */
+ {id:"q14",no:14,sec:"類義",type:"synonym",
+  pre:"社長[しゃちょう]は小林[こばやし]部長[ぶちょう]の",target:"手腕[しゅわん]",post:"を高[たか]く評価[ひょうか]しているようだ。",
+  options:[{t:"経験",note:"kinh nghiệm — không phải “tài năng”"},{t:"能力"},{t:"考え",note:"suy nghĩ, ý tưởng"},{t:"人柄",note:"tính cách, nhân phẩm"}],correct:1,
+  reading:"手腕（しゅわん）",meaning:"tài năng, bản lĩnh, năng lực làm việc ≈ 能力",hanviet:"手腕 — Thủ Oản (手 thủ = tay · 腕 oản = cánh tay) → bản lĩnh",
+  trans:"Có vẻ giám đốc đánh giá cao năng lực của trưởng phòng Kobayashi.",
+  point:"手腕 = tài xử lý công việc, gần với 能力 nhất. Khác 経験 (kinh nghiệm) và 人柄 (nhân cách)."},
+ {id:"q15",no:15,sec:"類義",type:"synonym",
+  pre:"時間[じかん]を",target:"ロス",post:"してしまった。",
+  options:[{t:"間違えて",note:"nhầm lẫn"},{t:"無駄にして"},{t:"かいて",note:"(掻いて/書いて) gãi/viết — không hợp"},{t:"延長して",note:"kéo dài (延長) — nghĩa ngược"}],correct:1,
+  reading:"ロス（loss）",meaning:"làm lãng phí, làm mất (thời gian) ≈ 無駄にする",hanviet:null,
+  trans:"Tôi đã làm lãng phí mất thời gian.",
+  point:"ロス (từ mượn “loss”) = lãng phí/tổn thất → 無駄にする. Không phải “nhầm” hay “kéo dài”."},
+ {id:"q16",no:16,sec:"類義",type:"synonym",
+  pre:"確認[かくにん]が",target:"おろそか",post:"になっていた。",
+  options:[{t:"めんどうくさ",note:"面倒くさい = phiền phức"},{t:"困難",note:"こんなん = khó khăn"},{t:"遅く",note:"chậm, muộn"},{t:"いいかげん"}],correct:3,
+  reading:"おろそか（疎か）",meaning:"qua loa, lơ là, cẩu thả ≈ いい加減",hanviet:null,
+  trans:"Việc kiểm tra đã trở nên qua loa/lơ là.",
+  point:"おろそか = làm cho có, không kỹ → gần với いいかげん (tùy tiện, cẩu thả)."},
+ {id:"q17",no:17,sec:"類義",type:"synonym",
+  pre:"私[わたし]たちのチームの",target:"目下[もっか]",post:"の目標[もくひょう]は、市[し]の大会[たいかい]で優勝[ゆうしょう]することだ。",
+  options:[{t:"最大",note:"tối đa, lớn nhất"},{t:"将来",note:"tương lai"},{t:"今"},{t:"最低限",note:"tối thiểu"}],correct:2,
+  reading:"目下（もっか）",meaning:"hiện tại, trước mắt ≈ 今",hanviet:"目下 — Mục Hạ (目 mục = mắt · 下 hạ = dưới) → ngay trước mắt",
+  trans:"Mục tiêu trước mắt của đội chúng tôi là vô địch giải đấu thành phố.",
+  point:"目下（もっか）= ngay lúc này, hiện tại → 今. (Đọc めした thì nghĩa khác: người dưới quyền.)"},
+ {id:"q18",no:18,sec:"類義",type:"synonym",
+  pre:"経費[けいひ]を考慮[こうりょ]したうえで、古[ふる]いアパートの改修[かいしゅう]工事[こうじ]を",target:"請[う]け負[お]う",post:"ことにした。",
+  options:[{t:"引き受ける"},{t:"申し込む",note:"đăng ký, xin làm"},{t:"断る",note:"từ chối"},{t:"諦める",note:"từ bỏ"}],correct:0,
+  reading:"請け負う（うけおう）",meaning:"nhận thầu, đảm nhận (công việc) ≈ 引き受ける",hanviet:"請 Thỉnh (nhận/mời) · 負 Phụ (gánh) → nhận gánh vác",
+  trans:"Sau khi cân nhắc chi phí, tôi quyết định nhận thầu công trình cải tạo căn hộ cũ.",
+  point:"請け負う = đứng ra nhận (công việc) → 引き受ける. Khác 申し込む (xin), 断る (từ chối)."},
+ {id:"q19",no:19,sec:"類義",type:"synonym",
+  pre:"先生[せんせい]に本[ほん]を",target:"進呈[しんてい]",post:"しました。",
+  options:[{t:"差し上げました"},{t:"いただきました",note:"nhận (khiêm nhường) — chiều ngược"},{t:"お貸ししました",note:"cho mượn"},{t:"お借りしました",note:"đi mượn"}],correct:0,
+  reading:"進呈（しんてい）",meaning:"kính biếu, kính tặng ≈ 差し上げる",hanviet:"進呈 — Tiến Trình (進 tiến = dâng · 呈 trình = trình lên) → dâng tặng",
+  trans:"Tôi đã kính tặng sách cho thầy.",
+  point:"進呈 = biếu/tặng (kính ngữ, mình đưa cho người trên) → 差し上げる."},
+
+ /* ---------- 問題4 · 用法 ---------- */
+ {id:"q20",no:20,sec:"用法",type:"usage",wordFuri:"加工[かこう]",
+  options:[
+   {t:"食事[しょくじ]や運動[うんどう]などの生活[せいかつ]習慣[しゅうかん]を【加工[かこう]】するよう医師[いし]からアドバイスを受[う]けた。",note:"Thói quen sinh hoạt → 見直す／改善 (điều chỉnh), không dùng 加工"},
+   {t:"このお店[みせ]では、余[あま]った木材[もくざい]を【加工[かこう]】した商品[しょうひん]を販売[はんばい]している。"},
+   {t:"両親[りょうしん]は古[ふる]い民家[みんか]を安[やす]く購入[こうにゅう]して、自分[じぶん]たちで民宿[みんしゅく]に【加工[かこう]】した。",note:"Cải tạo nhà → 改装／改造, không dùng 加工"},
+   {t:"わが社[しゃ]は、現状[げんじょう]に合[あ]わせて就業[しゅうぎょう]規則[きそく]の一部[いちぶ]を【加工[かこう]】することにした。",note:"Sửa quy định → 改定／変更, không dùng 加工"}
+  ],correct:1,
+  reading:"加工（かこう）",meaning:"gia công, chế biến (nguyên vật liệu)",hanviet:"加工 — Gia Công (加 gia = thêm · 工 công = chế tác)",
+  trans:"Ở cửa hàng này, họ bán các sản phẩm gia công từ gỗ thừa.",
+  point:"加工 chỉ dùng cho chế biến vật liệu (gỗ, thực phẩm…). Không dùng cho thói quen, nhà cửa, quy định."},
+ {id:"q21",no:21,sec:"用法",type:"usage",wordFuri:"養[やしな]う",
+  options:[
+   {t:"息子[むすこ]が近[ちか]くの公園[こうえん]で虫[むし]を捕[つか]まえてきたので、家[いえ]で【養[やしな]う】ことにした。",note:"Nuôi côn trùng/thú → 飼[か]う, không dùng 養う"},
+   {t:"部屋[へや]のベランダで植物[しょくぶつ]を【養[やしな]う】ために、お店[みせ]で鉢[はち]や土[つち]を買[か]った。",note:"Trồng/chăm cây → 育[そだ]てる, không dùng 養う"},
+   {t:"私[わたし]は一人[ひとり]で売[う]り上[あ]げを伸[の]ばし、自分[じぶん]の会社[かいしゃ]を【養[やしな]って】きた。",note:"Gây dựng công ty → 育てる／大きくする"},
+   {t:"山口[やまぐち]さんは、会社[かいしゃ]を経営[けいえい]しながら3人[にん]の子[こ]どもを【養[やしな]って】いる。"}
+  ],correct:3,
+  reading:"養う（やしなう）",meaning:"nuôi dưỡng (gia đình, người phụ thuộc); bồi dưỡng (năng lực)",hanviet:"養 — Dưỡng (nuôi dưỡng); vd 養育 = dưỡng dục",
+  trans:"Anh Yamaguchi vừa điều hành công ty vừa nuôi ba đứa con.",
+  point:"養う = nuôi người (gia đình). Nuôi thú → 飼う; chăm cây / gây dựng → 育てる."},
+ {id:"q22",no:22,sec:"用法",type:"usage",wordFuri:"資質[ししつ]",
+  options:[
+   {t:"携帯[けいたい]電話[でんわ]のカメラの【資質[ししつ]】は日[ひ]に日[ひ]に向上[こうじょう]している。",note:"Chất lượng máy → 性能／画質, không dùng 資質"},
+   {t:"この動物[どうぶつ]は、見[み]た目[め]はかわいらしいが、【資質[ししつ]】は荒[あら]いので注意[ちゅうい]が必要[ひつよう]だ。",note:"Bản tính con vật → 性質／気性, không dùng 資質"},
+   {t:"玩具[おもちゃ]の会社[かいしゃ]で製品[せいひん]の【資質[ししつ]】を管理[かんり]する仕事[しごと]をしています。",note:"Chất lượng sản phẩm → 品質, không dùng 資質"},
+   {t:"森[もり]さんは身体[しんたい]能力[のうりょく]が高[たか]く、陸上[りくじょう]選手[せんしゅ]としての【資質[ししつ]】に恵[めぐ]まれている。"}
+  ],correct:3,
+  reading:"資質（ししつ）",meaning:"tư chất, tố chất (năng khiếu bẩm sinh của người)",hanviet:"資質 — Tư Chất (資 tư = vốn có · 質 chất = bản chất)",
+  trans:"Anh Mori có thể lực tốt, được trời phú tố chất của một vận động viên điền kinh.",
+  point:"資質 = tố chất bẩm sinh CỦA NGƯỜI. Chất lượng đồ vật → 性能／品質; bản tính con vật → 性質."},
+ {id:"q23",no:23,sec:"用法",type:"usage",wordFuri:"正当[せいとう]",
+  options:[
+   {t:"説明書[せつめいしょ]を見[み]て【正当[せいとう]】に組[く]み立[た]てたのに、部品[ぶひん]が一[ひと]つ余[あま]った。",note:"Lắp đúng hướng dẫn → 正[ただ]しく, không dùng 正当"},
+   {t:"「まる」はニックネームで、私[わたし]の【正当[せいとう]】な名前[なまえ]は「丸山[まるやま]」です。",note:"Tên thật → 正式, không dùng 正当"},
+   {t:"その画家[がか]は、若[わか]いころには【正当[せいとう]】な評価[ひょうか]を受[う]けていなかった。"},
+   {t:"トンネルの建設[けんせつ]工事[こうじ]は大[おお]きな遅[おく]れもなく、【正当[せいとう]】に進[すす]んでいる。",note:"Tiến triển suôn sẻ → 順調, không dùng 正当"}
+  ],correct:2,
+  reading:"正当（せいとう）",meaning:"chính đáng, đúng lẽ, xứng đáng",hanviet:"正当 — Chính Đáng (正 chính = đúng · 当 đáng = thỏa đáng)",
+  trans:"Hồi trẻ, họa sĩ ấy đã không được đánh giá một cách xứng đáng.",
+  point:"正当 = hợp lẽ, chính đáng (正当な評価／理由／権利). Đúng thao tác → 正しく; tên chính thức → 正式; suôn sẻ → 順調."},
+ {id:"q24",no:24,sec:"用法",type:"usage",wordFuri:"ありきたり",
+  options:[
+   {t:"この町[まち]はコンビニが【ありきたり】で、とても便利[べんり]だ。",note:"Ý “đâu cũng có” → たくさんある, không dùng ありきたり"},
+   {t:"その小説[しょうせつ]のストーリーは【ありきたり】で、つまらなかった。"},
+   {t:"困[こま]っている人[ひと]がいたら助[たす]けるのは、【ありきたり】のことだ。",note:"Ý “đương nhiên” → 当[あ]たり前[まえ], không dùng ありきたり"},
+   {t:"【ありきたり】の方[かた]は、入場[にゅうじょう]料[りょう]が1000円[えん]となっています。",note:"Câu vô nghĩa — ありきたり không chỉ hạng/loại người"}
+  ],correct:1,
+  reading:"ありきたり",meaning:"tầm thường, sáo mòn, thường thấy đến mức nhàm",hanviet:null,
+  trans:"Cốt truyện của cuốn tiểu thuyết đó rất sáo mòn nên chán.",
+  point:"ありきたり = cũ mòn, ai cũng thấy → nhàm. Khác 当たり前 (đương nhiên) và たくさん (nhiều)."},
+ {id:"q25",no:25,sec:"用法",type:"usage",wordFuri:"間柄[あいだがら]",
+  options:[
+   {t:"木村[きむら]さんと中学[ちゅうがく]のクラスメートは、それほど親[した]しい【間柄[あいだがら]】ではない。"},
+   {t:"友好[ゆうこう]条約[じょうやく]で両国[りょうこく]の【間柄[あいだがら]】は今後[こんご]進展[しんてん]する。",note:"Quan hệ giữa hai NƯỚC → 関係, 間柄 chỉ dùng cho quan hệ cá nhân"},
+   {t:"生態[せいたい]の変化[へんか]と近年[きんねん]の環境[かんきょう]破壊[はかい]との【間柄[あいだがら]】が指摘[してき]される。",note:"Quan hệ nhân quả giữa sự vật → 関連／関係"},
+   {t:"父[ちち]は漁民[ぎょみん]で、小[ちい]さい頃[ころ]から海[うみ]と【間柄[あいだがら]】の深[ふか]い暮[く]らしをしてきた。",note:"Gắn bó với biển → 関[かか]わり／縁[えん]"}
+  ],correct:0,
+  reading:"間柄（あいだがら）",meaning:"mối quan hệ (tình thân giữa người với người)",hanviet:"間柄 — 間 Gian (khoảng giữa) · 柄 Bính (bản chất) → quan hệ giữa người",
+  trans:"Kimura và bạn cùng lớp cấp hai không phải mối quan hệ thân thiết đến thế.",
+  point:"間柄 = quan hệ GIỮA NGƯỜI với người (親子の間柄, 親しい間柄). Quan hệ nước/sự vật → 関係・関連."}
+];
+
+var MASTER = 4;
+
+/* ============ STORAGE (localStorage) ============ */
+var KEY = "n1-2024-12-mondai-3-4";
+var mem = {};
+function loadProgress(cb){
+  var p = {};
+  try { var raw = localStorage.getItem(KEY); if (raw) p = JSON.parse(raw); }
+  catch(e){ p = mem; }
+  cb(p || {});
+}
+function saveProgress(p){
+  mem = p;
+  try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(e){}
+}
+
+/* ============ STATE ============ */
+var S = { prog:{}, view:"home", order:[], pos:0, sel:null, revealed:false, flipped:false, results:[] };
+var app = document.getElementById("app");
+
+function nextBox(box, ok){ return ok ? Math.min(5,(box||0)+1) : 1; }
+function stampColor(box){ if(!box) return "var(--stampNew)"; if(box>=MASTER) return "var(--indigo)"; if(box===3) return "var(--amber)"; return "var(--red)"; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function furi(s){
+  s = esc(s);
+  return s.replace(/([\u4e00-\u9fff々〆ヶ]+)\[([\u3040-\u30ffー]+)\]/g,'<ruby>$1<rt>$2</rt></ruby>');
+}
+/* usage: furigana + 【từ】 -> in đậm */
+function furiU(s){ return furi(s).replace(/【([\s\S]*?)】/g,'<b class="tw">$1</b>'); }
+
+function updateItem(id, ok){
+  var cur = S.prog[id] || {box:0,seen:0,correct:0,wrong:0};
+  S.prog[id] = { box: nextBox(cur.box,ok), seen:cur.seen+1, correct:cur.correct+(ok?1:0), wrong:cur.wrong+(ok?0:1) };
+  saveProgress(S.prog);
+}
+function mastered(){ var n=0; DATA.forEach(function(d){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)>=MASTER) n++; }); return n; }
+function weakIdx(){ var r=[]; DATA.forEach(function(d,i){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)<MASTER) r.push(i); }); return r; }
+
+/* ============ ICONS ============ */
+var IC = {
+  check:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';},
+  x:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';},
+  back:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';},
+  fwd:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';},
+  reset:function(c){return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>';},
+  quiz:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';},
+  cards:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="16" rx="2"/><path d="M7 5V3.5A1.5 1.5 0 0 1 8.5 2H19a2 2 0 0 1 2 2v13"/></svg>';},
+  focus:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>';}
+};
+
+/* ============ QUESTION / SENTENCE ============ */
+function sentenceHTML(item, variant){
+  if(item.type==="synonym"){
+    var mid = '<span class="hi u">'+furi(item.target)+'</span>';
+    return '<span class="sent">'+furi(item.pre)+mid+furi(item.post)+'</span>';
+  }
+  // (reading/fill giữ lại để tương thích, buổi này không dùng)
+  var parts = (item.prompt||"").split("（　）");
+  var fill = '<span class="blank">（　）</span>';
+  return '<span class="sent">'+furi(parts[0]||"")+fill+furi(parts[1]||"")+'</span>';
+}
+function cardTopHTML(item){
+  if(item.type==="usage"){
+    return '<div class="wordq">'+furi(item.wordFuri)+'</div><div class="wordq-sub">Từ này dùng đúng ở câu nào?</div>';
+  }
+  return sentenceHTML(item,"quiz");
+}
+
+/* ============ RENDER: HOME ============ */
+function renderHome(){
+  var m = mastered(), weak = weakIdx(), pct = Math.round(m/DATA.length*100);
+  var tiles = DATA.map(function(d,i){
+    var box = (S.prog[d.id]&&S.prog[d.id].box)||0, done = box>=MASTER, c = stampColor(box);
+    var dot = (!done && box>0) ? '<span class="dot" style="background:'+c+'"></span>' : '';
+    var style = done ? '' : ('color:'+c);
+    return '<button class="tile'+(done?' done':'')+'" data-tile="'+i+'" style="'+style+'">'+d.no+dot+'</button>';
+  }).join("");
+  var focusEnabled = weak.length>0;
+  app.innerHTML =
+   '<div class="fade">'+
+    '<div class="row" style="justify-content:space-between;align-items:flex-end;margin-bottom:18px">'+
+      '<div><div class="brand">藍 <small>N1 記憶帳</small></div>'+
+      '<div class="sub13">2024/12 · 問題3・4 · 文字・語彙 (Q14–25)</div></div>'+
+      '<button class="link" data-act="reset" title="Xóa tiến độ">'+IC.reset("#71787f")+' Đặt lại</button>'+
+    '</div>'+
+    '<div class="card map">'+
+      '<div class="top"><span class="lbl">BẢN ĐỒ TRÍ NHỚ</span>'+
+        '<span style="font-size:13px"><b style="color:var(--indigo);font-size:16px">'+m+'</b> / '+DATA.length+' đã thuộc</span></div>'+
+      '<div class="grid">'+tiles+'</div>'+
+      '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="legend">'+
+        '<span><i class="sw" style="background:var(--stampNew)"></i>Chưa học</span>'+
+        '<span><i class="sw" style="background:var(--red)"></i>Còn yếu</span>'+
+        '<span><i class="sw" style="background:var(--amber)"></i>Gần thuộc</span>'+
+        '<span><i class="sw" style="background:var(--indigo)"></i>Đã thuộc</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="modes">'+
+      modeBtn("primary","quiz",IC.quiz("#fff"),"Luyện đề","Làm 12 câu như thi thật, chấm + phân tích ngay",false)+
+      modeBtn("ghost","flash",IC.cards("#213a6b"),"Lật thẻ","Ôn nhanh cả 12 câu bằng flashcard",false)+
+      modeBtn("ghost","focus",IC.focus(focusEnabled?"#c1553c":"#71787f"),
+        focusEnabled?("Ôn câu yếu ("+weak.length+")"):"Ôn câu yếu",
+        focusEnabled?"Chỉ lật lại những câu bạn chưa chắc":"Tuyệt vời — chưa có câu nào cần ôn thêm",
+        !focusEnabled)+
+    '</div>'+
+    '<div class="foot">Tiến độ được lưu tự động. Chạm một ô trên bản đồ để ôn riêng câu đó.</div>'+
+   '</div>';
+
+  app.querySelectorAll("[data-tile]").forEach(function(b){
+    b.addEventListener("click",function(){ startFlash([parseInt(b.getAttribute("data-tile"),10)]); });
+  });
+  bind("[data-act=reset]", function(){
+    if (typeof window!=="undefined" && window.confirm && !window.confirm("Xóa toàn bộ tiến độ đã lưu?")) return;
+    S.prog={}; saveProgress({}); renderHome();
+  });
+  bind("[data-mode=quiz]", startQuiz);
+  bind("[data-mode=flash]", function(){ startFlash(DATA.map(function(_,i){return i;})); });
+  var fb = app.querySelector("[data-mode=focus]");
+  if (fb && focusEnabled) fb.addEventListener("click", function(){ startFlash(weak); });
+}
+function modeBtn(kind,mode,icon,title,sub,disabled){
+  var ig = kind==="primary"?"rgba(255,255,255,.85)":"#213a6b";
+  var arrow = disabled?"":IC.fwd(ig);
+  return '<button class="mode '+kind+'" data-mode="'+mode+'"'+(disabled?" disabled":"")+'>'+
+    '<span class="ic">'+icon+'</span>'+
+    '<span class="tt"><b>'+title+'</b><span>'+sub+'</span></span>'+arrow+'</button>';
+}
+
+/* ============ RENDER: QUIZ ============ */
+function renderQuiz(){
+  var item = DATA[S.order[S.pos]];
+  var isUsage = item.type==="usage";
+  var pct = Math.round((S.pos + (S.revealed?1:0))/S.order.length*100);
+  var opts = item.options.map(function(o,i){
+    var cls="opt"+(isUsage?" long":""), noteHTML="";
+    if(S.revealed){
+      cls+=" locked";
+      if(i===item.correct){ cls+=" correct"; }
+      else if(i===S.sel){ cls+=" wrong"; if(o.note) noteHTML='<div class="optnote bad">'+esc(o.note)+'</div>'; }
+      else { cls+=" dim"; if(o.note) noteHTML='<div class="optnote">'+esc(o.note)+'</div>'; }
+    }
+    var nbadge = (S.revealed && i===item.correct) ? IC.check("#1f8f63")
+               : (S.revealed && i===S.sel) ? IC.x("#c1553c")
+               : (i+1);
+    var nStyle = (S.revealed && (i===item.correct||i===S.sel)) ? "background:transparent" : "";
+    var txt = isUsage ? furiU(o.t) : esc(o.t);
+    return '<div><button class="'+cls+'" data-opt="'+i+'"'+(S.revealed?" disabled":"")+'>'+
+      '<span class="n" style="'+nStyle+'">'+nbadge+'</span>'+
+      '<span class="txt">'+txt+'</span></button>'+noteHTML+'</div>';
+  }).join("");
+
+  var hv = item.hanviet ? '<div class="hv">漢越 · '+esc(item.hanviet)+'</div>' : '';
+  var expl = S.revealed ? (
+    '<div class="expl fade"><div class="rd">'+esc(item.reading)+'</div>'+hv+
+    '<div class="mn">'+esc(item.meaning)+'</div><hr>'+
+    '<div class="ln"><b>Dịch · </b>'+esc(item.trans)+'</div>'+
+    '<div class="ln"><b>Mấu chốt · </b>'+esc(item.point)+'</div></div>'+
+    '<button class="cta" data-act="next">'+(S.pos+1>=S.order.length?"Xem kết quả":"Câu tiếp theo")+' '+IC.fwd("#fff")+'</button>'
+  ) : "";
+
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="card qcard">'+cardTopHTML(item)+'</div>'+
+    '<div class="opts">'+opts+'</div>'+expl+'</div>';
+
+  bind("[data-act=exit]", goHome);
+  if(!S.revealed){
+    app.querySelectorAll("[data-opt]").forEach(function(b){
+      b.addEventListener("click",function(){ answer(parseInt(b.getAttribute("data-opt"),10)); });
+    });
+  }
+  bind("[data-act=next]", nextQuiz);
+}
+
+/* ============ RENDER: FLASH ============ */
+function renderFlash(){
+  var item = DATA[S.order[S.pos]];
+  var isUsage = item.type==="usage";
+  var pct = Math.round(S.pos/S.order.length*100);
+  var hv = item.hanviet ? '<div class="hv">漢越 · '+esc(item.hanviet)+'</div>' : '';
+  var front = isUsage
+    ? '<div class="kick">DÙNG TỪ · Câu '+item.no+'</div><div class="wordq">'+furi(item.wordFuri)+'</div><div class="wordq-sub">Từ này dùng thế nào?</div><div class="tap">Chạm để lật ↺</div>'
+    : '<div class="kick">CHỌN NGHĨA GẦN NHẤT · Câu '+item.no+'</div>'+sentenceHTML(item,"flash")+'<div class="tap">Chạm để lật ↺</div>';
+  var exampleLine = isUsage ? '<div class="ln"><b>Ví dụ:</b> '+furiU(item.options[item.correct].t)+'</div>' : '';
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="flip'+(S.flipped?" on":"")+'" data-act="flip"><div class="inner">'+
+      '<div class="face front">'+front+'</div>'+
+      '<div class="face back"><div class="rd">'+esc(item.reading)+'</div>'+hv+
+        '<div class="mn">'+esc(item.meaning)+'</div><hr>'+
+        exampleLine+
+        '<div class="ln"><b>Dịch:</b> '+esc(item.trans)+'</div>'+
+        '<div class="ln">'+esc(item.point)+'</div></div>'+
+    '</div></div>'+
+    '<div class="marks">'+
+      '<button class="mark no" data-mark="0">'+IC.x("#c1553c")+' Chưa nhớ</button>'+
+      '<button class="mark yes" data-mark="1">'+IC.check("#1f8f63")+' Đã nhớ</button>'+
+    '</div>'+
+    '<div class="foot">"Chưa nhớ" đưa câu về đầu hàng ôn; "Đã nhớ" nâng câu lên gần mức thuộc.</div>'+
+   '</div>';
+
+  bind("[data-act=exit]", goHome);
+  bind("[data-act=flip]", function(){ S.flipped=!S.flipped; app.querySelector(".flip").classList.toggle("on",S.flipped); });
+  app.querySelectorAll("[data-mark]").forEach(function(b){
+    b.addEventListener("click",function(e){ e.stopPropagation(); markFlash(b.getAttribute("data-mark")==="1"); });
+  });
+}
+
+/* ============ RENDER: DONE ============ */
+function renderDone(){
+  var ok = S.results.filter(function(r){return r.ok;}).length;
+  var wrong = S.results.filter(function(r){return !r.ok;});
+  var pct = Math.round(ok/S.results.length*100);
+  var wrongHTML;
+  if(wrong.length===0){
+    wrongHTML = '<div style="color:var(--green);font-weight:700;text-align:center">Trọn vẹn — không sai câu nào! 🎯</div>';
+  } else {
+    wrongHTML = '<div style="font-size:13px;color:var(--sub);margin-bottom:10px">Cần ôn lại '+wrong.length+' câu:</div>'+
+      '<div style="display:flex;flex-direction:column;gap:8px">'+
+      wrong.map(function(r){ var it=DATA[r.idx];
+        return '<div class="wrongrow"><span class="n">'+it.no+'</span>'+
+          '<span class="serif">'+esc(it.reading)+'</span>'+
+          '<span style="color:var(--sub);font-size:12.5px">· '+esc(it.meaning)+'</span></div>';
+      }).join("")+'</div>';
+  }
+  app.innerHTML = '<div class="done fade">'+
+    '<div class="lbl" style="letter-spacing:1px">KẾT QUẢ LUYỆN ĐỀ</div>'+
+    '<div class="score">'+ok+'<small>/'+S.results.length+'</small></div>'+
+    '<div class="muted" style="font-size:14px;margin-top:4px">đúng '+pct+'%</div>'+
+    '<div class="wrongbox">'+wrongHTML+'</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+
+      (wrong.length>0?'<button class="cta" data-act="review">Lật thẻ ôn '+wrong.length+' câu sai</button>':'')+
+      '<button class="cta ghost" data-act="home">Về trang chủ</button>'+
+    '</div></div>';
+  bind("[data-act=review]", function(){ var w=S.results.filter(function(r){return !r.ok;}).map(function(r){return r.idx;}); startFlash(w.length?w:DATA.map(function(_,i){return i;})); });
+  bind("[data-act=home]", goHome);
+}
+
+/* ============ SHARED ============ */
+function topbar(sec,pos,total,pct){
+  return '<div class="tb"><button class="link" data-act="exit">'+IC.back("#71787f")+' Thoát</button>'+
+    '<span class="chip">問題 '+sec+'</span>'+
+    '<span class="count">'+(pos+1)+' / '+total+'</span></div>'+
+    '<div class="tbbar"><i style="width:'+pct+'%"></i></div>';
+}
+function bind(sel, fn){ var el=app.querySelector(sel); if(el) el.addEventListener("click",fn); }
+
+/* ============ ACTIONS ============ */
+function goHome(){ S.view="home"; renderHome(); }
+function startQuiz(){ S.order=DATA.map(function(_,i){return i;}); S.pos=0; S.sel=null; S.revealed=false; S.results=[]; S.view="quiz"; renderQuiz(); }
+function startFlash(idxs){ S.order=(idxs&&idxs.length)?idxs:DATA.map(function(_,i){return i;}); S.pos=0; S.flipped=false; S.view="flash"; renderFlash(); }
+function answer(i){
+  if(S.revealed) return;
+  var item=DATA[S.order[S.pos]]; var ok=(i===item.correct);
+  S.sel=i; S.revealed=true; updateItem(item.id,ok); S.results.push({idx:S.order[S.pos],ok:ok});
+  renderQuiz();
+}
+function nextQuiz(){
+  if(S.pos+1>=S.order.length){ S.view="done"; renderDone(); return; }
+  S.pos++; S.sel=null; S.revealed=false; renderQuiz();
+}
+function markFlash(ok){
+  var item=DATA[S.order[S.pos]]; updateItem(item.id,ok);
+  if(S.pos+1>=S.order.length){ goHome(); return; }
+  S.pos++; S.flipped=false; renderFlash();
+}
+
+/* ============ BOOT ============ */
+loadProgress(function(p){ S.prog=p||{}; if(typeof location!=="undefined" && location.hash.indexOf("focus")>=0){ var w=weakIdx(); if(w.length){ startFlash(w); return; } } renderHome(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>藍 N1 記憶帳 — 2024/12 問題1・2</title>
+<style>
+  :root{
+    --bg:#eceef2; --paper:#fff; --ink:#1b232e; --sub:#71787f; --line:#e2e5ea;
+    --indigo:#213a6b; --indigoDim:#3a5691; --indigoSoft:#e9edf6;
+    --green:#1f8f63; --greenSoft:#e6f4ec; --red:#c1553c; --redSoft:#f8ebe6;
+    --amber:#c58a24; --amberSoft:#f8f0dd; --stampNew:#cfd4dc;
+    --serif:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS Mincho",serif;
+    --sans:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);
+    padding:20px 14px calc(40px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  .wrap{max-width:460px;margin:0 auto}
+  button{font-family:var(--sans);cursor:pointer}
+  .serif{font-family:var(--serif)}
+  .muted{color:var(--sub)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08)}
+  .row{display:flex;align-items:center}
+  .fade{animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){.fade{animation:none}*{transition:none!important}}
+
+  /* furigana */
+  ruby{ruby-align:center}
+  rt{font-family:var(--sans);font-size:.5em;font-weight:400;color:var(--sub);letter-spacing:0}
+
+  .brand{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--indigo);letter-spacing:1px}
+  .brand small{font-size:15px;color:var(--sub);font-family:var(--sans);letter-spacing:0}
+  .sub13{font-size:13px;color:var(--sub);margin-top:2px}
+  .link{background:none;border:none;color:var(--sub);font-size:12px;display:flex;align-items:center;gap:5px;padding:4px}
+
+  .map{padding:18px 18px 16px}
+  .map .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .lbl{font-size:13px;color:var(--sub);letter-spacing:.5px}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+  .tile{aspect-ratio:1/1;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);
+    font-family:var(--serif);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative}
+  .tile.done{border-color:var(--indigo);background:var(--indigo);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+  .tile .dot{position:absolute;bottom:4px;width:14px;height:3px;border-radius:2px}
+  .bar{height:6px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:14px}
+  .bar > i{display:block;height:100%;background:var(--indigo);transition:width .5s}
+  .legend{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--sub);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+  .modes{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+  .mode{display:flex;align-items:center;gap:14px;text-align:left;width:100%;border-radius:16px;padding:15px 16px;border:none}
+  .mode .ic{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;flex-shrink:0}
+  .mode .tt{flex:1}
+  .mode .tt b{display:block;font-size:16px}
+  .mode .tt span{display:block;font-size:12.5px;margin-top:2px}
+  .mode.primary{background:var(--indigo);color:#fff;box-shadow:0 2px 8px rgba(33,58,107,.25)}
+  .mode.primary .ic{background:rgba(255,255,255,.15)}
+  .mode.primary .tt span{color:rgba(255,255,255,.8)}
+  .mode.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+  .mode.ghost .ic{background:var(--indigoSoft)}
+  .mode.ghost .tt span{color:var(--sub)}
+  .mode:disabled{opacity:.6;cursor:default}
+  .foot{text-align:center;margin-top:18px;font-size:11.5px;color:var(--sub);line-height:1.5}
+
+  .tb{display:flex;align-items:center;justify-content:space-between}
+  .chip{font-size:12px;color:var(--indigo);background:var(--indigoSoft);padding:4px 10px;border-radius:20px;font-weight:600}
+  .count{font-size:13px;color:var(--sub);min-width:44px;text-align:right}
+  .tbbar{height:5px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:10px}
+  .tbbar > i{display:block;height:100%;background:var(--indigo);transition:width .35s}
+
+  .qcard{padding:22px 20px;margin-top:12px}
+  .sent{font-family:var(--serif);font-size:22px;line-height:2.15;color:var(--ink)}
+  .hi{color:var(--indigo);font-weight:700;padding:0 1px}
+  .hi.u{border-bottom:2px solid var(--indigo)}
+  .blank{display:inline-block;min-width:54px;text-align:center;color:var(--indigoDim);font-weight:700;border-bottom:2px solid var(--indigoDim)}
+  .opts{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--paper);
+    border:1.5px solid var(--line);border-radius:13px;padding:13px 14px;transition:background .15s,border-color .15s}
+  .opt .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;
+    background:var(--indigoSoft);color:var(--indigo);font-size:13px;font-weight:700;flex-shrink:0}
+  .opt .txt{font-family:var(--serif);font-size:19px}
+  .opt.correct{background:var(--greenSoft);border-color:var(--green)}
+  .opt.wrong{background:var(--redSoft);border-color:var(--red)}
+  .opt.dim .txt{color:var(--sub)}
+  .opt.locked{cursor:default}
+  .optnote{font-size:12.5px;color:var(--sub);padding:6px 8px 0 46px;line-height:1.5}
+  .optnote.bad{color:var(--red)}
+
+  .expl{margin-top:16px;background:var(--indigoSoft);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .expl .rd{font-family:var(--serif);font-size:19px;color:var(--indigo);font-weight:700}
+  .expl .hv{font-size:12.5px;color:var(--indigoDim);margin-top:3px;font-weight:600}
+  .expl .mn{font-size:14px;margin-top:4px}
+  .expl hr{border:none;border-top:1px solid var(--line);margin:11px 0}
+  .expl .ln{font-size:13.5px;line-height:1.62;margin-top:7px}
+  .expl .ln b{color:var(--indigo)}
+  .cta{margin-top:16px;width:100%;background:var(--indigo);color:#fff;border:none;border-radius:14px;
+    padding:14px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line);font-weight:600}
+
+  .flip{margin-top:12px;perspective:1200px}
+  .flip .inner{position:relative;min-height:280px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .flip.on .inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;
+    background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08);
+    padding:24px 22px;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+  .face.back{transform:rotateY(180deg);background:var(--indigo);border:none}
+  .face .kick{font-size:12px;color:var(--sub);letter-spacing:1px;margin-bottom:14px}
+  .face .tap{margin-top:16px;font-size:12px;color:var(--sub)}
+  .face.back .rd{font-family:var(--serif);font-size:25px;color:#fff;font-weight:700}
+  .face.back .hv{font-size:12.5px;color:rgba(255,255,255,.8);margin-top:4px;font-weight:600}
+  .face.back .mn{font-size:15px;color:rgba(255,255,255,.92);margin-top:5px}
+  .face.back hr{border:none;border-top:1px solid rgba(255,255,255,.25);margin:12px 0}
+  .face.back .ln{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.55;margin-top:6px}
+  .marks{display:flex;gap:10px;margin-top:16px}
+  .mark{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:14px;font-size:15px;font-weight:700}
+  .mark.no{background:var(--redSoft);color:var(--red);border:1.5px solid var(--red)}
+  .mark.yes{background:var(--greenSoft);color:var(--green);border:1.5px solid var(--green)}
+
+  .done{text-align:center;padding-top:20px}
+  .score{font-family:var(--serif);font-size:56px;font-weight:700;color:var(--indigo);margin-top:6px;line-height:1}
+  .score small{font-size:26px;color:var(--sub)}
+  .wrongbox{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:22px;text-align:left}
+  .wrongrow{display:flex;align-items:center;gap:10px;font-size:14px}
+  .wrongrow .n{width:24px;height:24px;border-radius:7px;background:var(--redSoft);color:var(--red);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+
+<script>
+/* ============ DATA (2024/12 · 問題1・2 · Q1–13) ============
+   Furigana viết theo dạng 漢字[よみ]. Target của 問題1 KHÔNG gắn furigana (đó là câu hỏi). */
+var DATA = [
+ {id:"q1",no:1,sec:"読み方",type:"reading",
+  pre:"佐藤[さとう]選手[せんしゅ]がゴールを決[き]めたとき、観客[かんきゃく]は",target:"絶叫",post:"した。",
+  options:[{t:"せっきょう",note:"Sai: âm đầu phải đục「ぜっ」— không có cách đọc này"},{t:"ぜっきょう"},{t:"ぜっきゅう",note:"Sai:「叫」đọc「きょう」, không phải「きゅう」"},{t:"せっきゅう",note:"Sai cả âm đục lẫn đuôi"}],correct:1,
+  reading:"絶叫（ぜっきょう）",meaning:"gào thét, la hét",hanviet:"絶叫 — Tuyệt Khiếu (絶 tuyệt = tột cùng · 叫 khiếu = kêu thét)",
+  trans:"Khi tuyển thủ Sato ghi bàn, khán giả đã gào thét.",
+  point:"Bẫy kép:「絶」trước「き」biến âm thành đục「ぜっ」;「叫」đọc「きょう」chứ không phải「きゅう」."},
+ {id:"q2",no:2,sec:"読み方",type:"reading",
+  pre:"",target:"背後",post:"から物音[ものおと]が聞[き]こえた。",
+  options:[{t:"はいご"},{t:"はいこう",note:"Sai:「後」ở đây đọc đục「ご」"},{t:"せいご",note:"Sai:「背」đọc「はい」, không phải「せい」"},{t:"せいこう",note:"Sai cả hai chữ"}],correct:0,
+  reading:"背後（はいご）",meaning:"phía sau, sau lưng",hanviet:"背後 — Bối Hậu (背 bối = lưng · 後 hậu = sau)",
+  trans:"Có tiếng động vọng lại từ phía sau.",
+  point:"「背」âm on là はい (không phải せい);「後」ở đây đọc đục ご."},
+ {id:"q3",no:3,sec:"読み方",type:"reading",
+  pre:"将来[しょうらい]の",target:"抱負",post:"を述[の]べる。",
+  options:[{t:"ほうふ"},{t:"ほうぶ",note:"Sai:「負」đọc「ふ」(trong), không đục"},{t:"ほふ",note:"Sai:「抱」đọc dài「ほう」"},{t:"ほぶ",note:"Sai cả âm dài lẫn âm đục"}],correct:0,
+  reading:"抱負（ほうふ）",meaning:"hoài bão, chí hướng, dự định ấp ủ",hanviet:"抱負 — Bão Phụ (抱 bão = ôm · 負 phụ = mang)",
+  trans:"Trình bày hoài bão cho tương lai.",
+  point:"「抱」= ほう (âm dài),「負」= ふ (trong). Bẫy nằm ở ふ↔ぶ và ほう↔ほ."},
+ {id:"q4",no:4,sec:"読み方",type:"reading",
+  pre:"人[ひと]を",target:"侮って",post:"はいけない。",
+  options:[{t:"からかって",note:"からかう = trêu chọc, chọc ghẹo — từ khác nghĩa"},{t:"ののしって",note:"罵る = chửi rủa, mắng nhiếc — từ khác nghĩa"},{t:"あなどって"},{t:"うらぎって",note:"裏切る = phản bội — từ khác nghĩa"}],correct:2,
+  reading:"侮る（あなどる）",meaning:"coi thường, khinh thường",hanviet:"侮 — Vũ (khinh mạn, coi thường); vd 侮辱 = vũ nhục",
+  trans:"Không được coi thường người khác.",
+  point:"Ba đáp án nhiễu đều là động từ nghĩa tiêu cực gần giống. Nhớ mặt chữ 侮 → あなどる."},
+ {id:"q5",no:5,sec:"読み方",type:"reading",
+  pre:"相手[あいて]がわかるように、",target:"筋道",post:"を立[た]てて説明[せつめい]した。",
+  options:[{t:"きんどう",note:"Đọc on cả hai chữ — không có từ này"},{t:"すじどう",note:"Trộn kun(筋)+on(道) — không có từ này"},{t:"きんみち",note:"Trộn on(筋)+kun(道) — không có từ này"},{t:"すじみち"}],correct:3,
+  reading:"筋道（すじみち）",meaning:"mạch lạc, trình tự logic",hanviet:"筋道 — Cân Đạo (筋 cân = gân/mạch · 道 đạo = đường lối)",
+  trans:"Tôi đã giải thích một cách mạch lạc để đối phương hiểu.",
+  point:"Cả hai chữ đều đọc kun: 筋（すじ）+ 道（みち）. 筋道を立てる = trình bày mạch lạc."},
+ {id:"q6",no:6,sec:"読み方",type:"reading",
+  pre:"その小説[しょうせつ]の主人公[しゅじんこう]は、",target:"奔放",post:"な性格[せいかく]をしている。",
+  options:[{t:"はんぽう",note:"Sai:「奔」không đọc「はん」"},{t:"ぼんぽう",note:"Sai: âm đầu trong「ほ」, không đục"},{t:"ほんぽう"},{t:"ばんぽう",note:"Sai âm đầu"}],correct:2,
+  reading:"奔放（ほんぽう）",meaning:"phóng khoáng, tự do phóng túng",hanviet:"奔放 — Bôn Phóng (奔 bôn = chạy nhanh · 放 phóng = thả lỏng)",
+  trans:"Nhân vật chính của cuốn tiểu thuyết đó có tính cách phóng khoáng.",
+  point:"「奔」= ほん,「放」= ぽう (bán đục). Bẫy ở âm đầu: chỉ ほん đúng."},
+
+ {id:"q7",no:7,sec:"文脈規定",type:"fill",
+  prompt:"その生物[せいぶつ]は、厳[きび]しい環境[かんきょう]に（　）できる能力[のうりょく]を持[も]っている。",
+  options:[{t:"適応"},{t:"合致",note:"Hợp Trí · がっち = khớp, trùng khớp — 意見が合致"},{t:"転換",note:"Chuyển Hoán · てんかん = chuyển đổi — 方針を転換"},{t:"推移",note:"Suy Di · すいい = biến chuyển theo thời gian — 状況が推移"}],correct:0,
+  reading:"適応（てきおう）",meaning:"thích ứng",hanviet:"適応 — Thích Ứng (適 thích = hợp · 応 ứng = đáp lại)",
+  trans:"Sinh vật đó có khả năng thích ứng với môi trường khắc nghiệt.",
+  point:"Từ khóa 環境に…できる能力 → chỉ 適応 mới ghép thành 環境に適応する (thích ứng với môi trường)."},
+ {id:"q8",no:8,sec:"文脈規定",type:"fill",
+  prompt:"店[みせ]の売[う]り上[あ]げを五年[ごねん]で二倍[にばい]にするという目標[もくひょう]を（　）、みんなで努力[どりょく]している。",
+  options:[{t:"企って",note:"企 Xí · 企てる（くわだてる）= mưu tính (nghĩa tiêu cực) — không hợp"},{t:"興って",note:"興 Hưng · 興る（おこる）= hưng thịnh (tự động từ, không nhận を)"},{t:"築いて",note:"築 Trúc · 築く（きずく）= xây dựng (信頼・財産) — không đi với 目標"},{t:"掲げて"}],correct:3,
+  reading:"掲げる（かかげる）",meaning:"đề ra, giương cao (mục tiêu, khẩu hiệu)",hanviet:"掲 — Yết (giương lên, nêu ra); vd 掲示 = yết thị",
+  trans:"Đề ra mục tiêu tăng gấp đôi doanh thu cửa hàng trong 5 năm, mọi người cùng nỗ lực.",
+  point:"Collocation chuẩn: 目標を掲げる. Các từ nhiễu lệch nghĩa hoặc là tự động từ."},
+ {id:"q9",no:9,sec:"文脈規定",type:"fill",
+  prompt:"新[あたら]しい市長[しちょう]は前市長[ぜんしちょう]の政策[せいさく]を（　）し、駅前[えきまえ]の開発[かいはつ]を進[すす]めると述[の]べた。",
+  options:[{t:"相続",note:"Tương Tục · そうぞく = thừa kế tài sản — 遺産を相続"},{t:"獲得",note:"Hoạch Đắc · かくとく = giành được — 優勝を獲得"},{t:"踏襲"},{t:"伝承",note:"Truyền Thừa · でんしょう = truyền lại văn hóa, truyền thuyết"}],correct:2,
+  reading:"踏襲（とうしゅう）",meaning:"kế thừa, tiếp nối (đường lối, chính sách)",hanviet:"踏襲 — Đạp Tập (踏 đạp = giẫm/theo · 襲 tập = noi theo)",
+  trans:"Thị trưởng mới tuyên bố sẽ kế thừa chính sách của người tiền nhiệm và tiếp tục phát triển khu trước ga.",
+  point:"Tiếp nối chính sách người trước → 踏襲 (giữ nguyên đường lối). Khác với thừa kế tài sản (相続)."},
+ {id:"q10",no:10,sec:"文脈規定",type:"fill",
+  prompt:"台風[たいふう]で電車[でんしゃ]の到着[とうちゃく]が大幅[おおはば]に遅[おく]れたため、駅[えき]でしばらく（　）された。",
+  options:[{t:"息抜き",note:"息 Tức · いきぬき = xả hơi, giải lao (tự làm, không「される」)"},{t:"棚上げ",note:"棚 Bằng · たなあげ = gác lại — 問題を棚上げ"},{t:"待ち伏せ",note:"待 Đãi · まちぶせ = mai phục, rình"},{t:"足止め"}],correct:3,
+  reading:"足止め（あしどめ）",meaning:"bị kẹt lại, không đi được",hanviet:"足止め — 足 Túc (chân) · 止 Chỉ (dừng) → “chặn chân”",
+  trans:"Do bão khiến tàu đến trễ nhiều nên tôi bị kẹt lại ở ga một lúc.",
+  point:"Dạng bị động「された」là gợi ý: bị hoàn cảnh giữ chân → 足止め."},
+ {id:"q11",no:11,sec:"文脈規定",type:"fill",
+  prompt:"今日[きょう]は試合[しあい]で一日中[いちにちじゅう]走[はし]り続[つづ]けたので、疲[つか]れて（　）になった。",
+  options:[{t:"めちゃめちゃ",note:"tan nát, lộn xộn — không tả sự mệt"},{t:"へとへと"},{t:"どろどろ",note:"nhão nhoẹt, lầy lội — không tả sự mệt"},{t:"ぐちゃぐちゃ",note:"nhão nát, bầy nhầy — không tả sự mệt"}],correct:1,
+  reading:"へとへと",meaning:"kiệt sức, rã rời",hanviet:null,
+  trans:"Hôm nay thi đấu chạy suốt cả ngày nên mệt rã rời.",
+  point:"Cả 4 đều là từ tượng thanh/tượng hình, nhưng chỉ へとへと gắn với 疲れて (mệt lử)."},
+ {id:"q12",no:12,sec:"文脈規定",type:"fill",
+  prompt:"工場[こうじょう]の誘致[ゆうち]について、市長[しちょう]が丁寧[ていねい]に説明[せつめい]し、住民[じゅうみん]の不安[ふあん]の（　）に努[つと]めた。",
+  options:[{t:"払拭"},{t:"喪失",note:"Tang Thất · そうしつ = mất đi — 自信を喪失"},{t:"破棄",note:"Phá Khí · はき = hủy bỏ — 契約を破棄"},{t:"排斥",note:"Bài Xích · はいせき = bài xích, tẩy chay — 外国人を排斥"}],correct:0,
+  reading:"払拭（ふっしょく）",meaning:"xua tan, quét sạch (bất an, nghi ngờ)",hanviet:"払拭 — Phất Thức (払 phất = phủi · 拭 thức = lau) → lau sạch",
+  trans:"Về việc thu hút nhà máy, thị trưởng đã giải thích cặn kẽ và nỗ lực xua tan nỗi bất an của người dân.",
+  point:"Collocation 不安／疑念を払拭 (làm biến mất khỏi tâm trí)."},
+ {id:"q13",no:13,sec:"文脈規定",type:"fill",
+  prompt:"階段[かいだん]でつまずいて転[ころ]びそうになったので、（　）隣[となり]にいた友人[ゆうじん]の腕[うで]をつかんだ。",
+  options:[{t:"じきに",note:"sắp, chẳng mấy chốc (tương lai gần) — sai thời điểm"},{t:"いまに",note:"rồi sẽ có ngày (tương lai) — sai thời điểm"},{t:"とっさに"},{t:"とっくに",note:"từ lâu rồi (quá khứ xa) — sai thời điểm"}],correct:2,
+  reading:"とっさに",meaning:"ngay tức thì, theo phản xạ",hanviet:null,
+  trans:"Vì suýt vấp ngã ở cầu thang nên tôi theo phản xạ chộp lấy cánh tay người bạn đứng bên cạnh.",
+  point:"Tình huống suýt ngã → chộp tay bạn: cần phản xạ tức thì → とっさに."}
+];
+
+var MASTER = 4;
+
+/* ============ STORAGE (localStorage) ============ */
+var KEY = "n1-2024-12-mondai-1-2";
+var mem = {};
+function loadProgress(cb){
+  var p = {};
+  try { var raw = localStorage.getItem(KEY); if (raw) p = JSON.parse(raw); }
+  catch(e){ p = mem; }
+  cb(p || {});
+}
+function saveProgress(p){
+  mem = p;
+  try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(e){}
+}
+
+/* ============ STATE ============ */
+var S = { prog:{}, view:"home", order:[], pos:0, sel:null, revealed:false, flipped:false, results:[] };
+var app = document.getElementById("app");
+
+function nextBox(box, ok){ return ok ? Math.min(5,(box||0)+1) : 1; }
+function stampColor(box){ if(!box) return "var(--stampNew)"; if(box>=MASTER) return "var(--indigo)"; if(box===3) return "var(--amber)"; return "var(--red)"; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+/* furigana: escape + chuyển 漢字[よみ] -> <ruby> */
+function furi(s){
+  s = esc(s);
+  return s.replace(/([\u4e00-\u9fff々〆ヶ]+)\[([\u3040-\u30ffー]+)\]/g,'<ruby>$1<rt>$2</rt></ruby>');
+}
+
+function updateItem(id, ok){
+  var cur = S.prog[id] || {box:0,seen:0,correct:0,wrong:0};
+  S.prog[id] = { box: nextBox(cur.box,ok), seen:cur.seen+1, correct:cur.correct+(ok?1:0), wrong:cur.wrong+(ok?0:1) };
+  saveProgress(S.prog);
+}
+function mastered(){ var n=0; DATA.forEach(function(d){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)>=MASTER) n++; }); return n; }
+function weakIdx(){ var r=[]; DATA.forEach(function(d,i){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)<MASTER) r.push(i); }); return r; }
+
+/* ============ ICONS ============ */
+var IC = {
+  check:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';},
+  x:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';},
+  back:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';},
+  fwd:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';},
+  reset:function(c){return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>';},
+  quiz:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';},
+  cards:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="16" rx="2"/><path d="M7 5V3.5A1.5 1.5 0 0 1 8.5 2H19a2 2 0 0 1 2 2v13"/></svg>';},
+  focus:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>';}
+};
+
+/* ============ SENTENCE ============ */
+function sentenceHTML(item, variant){
+  if(item.type==="reading"){
+    var mid = (variant==="flash")
+      ? '<span class="hi">'+esc("【"+item.target+"】")+'</span>'
+      : '<span class="hi u">'+esc(item.target)+'</span>';
+    return '<span class="sent">'+furi(item.pre)+mid+furi(item.post)+'</span>';
+  }
+  var parts = item.prompt.split("（　）");
+  var fill = (variant==="flash")
+    ? '<span class="hi">'+esc("【"+item.options[item.correct].t+"】")+'</span>'
+    : '<span class="blank">（　）</span>';
+  return '<span class="sent">'+furi(parts[0])+fill+furi(parts[1]||"")+'</span>';
+}
+
+/* ============ RENDER: HOME ============ */
+function renderHome(){
+  var m = mastered(), weak = weakIdx(), pct = Math.round(m/DATA.length*100);
+  var tiles = DATA.map(function(d,i){
+    var box = (S.prog[d.id]&&S.prog[d.id].box)||0, done = box>=MASTER, c = stampColor(box);
+    var dot = (!done && box>0) ? '<span class="dot" style="background:'+c+'"></span>' : '';
+    var style = done ? '' : ('color:'+c);
+    return '<button class="tile'+(done?' done':'')+'" data-tile="'+i+'" style="'+style+'">'+d.no+dot+'</button>';
+  }).join("");
+  var focusEnabled = weak.length>0;
+  app.innerHTML =
+   '<div class="fade">'+
+    '<div class="row" style="justify-content:space-between;align-items:flex-end;margin-bottom:18px">'+
+      '<div><div class="brand">藍 <small>N1 記憶帳</small></div>'+
+      '<div class="sub13">2024/12 · 問題1・2 · 文字・語彙 (Q1–13)</div></div>'+
+      '<button class="link" data-act="reset" title="Xóa tiến độ">'+IC.reset("#71787f")+' Đặt lại</button>'+
+    '</div>'+
+    '<div class="card map">'+
+      '<div class="top"><span class="lbl">BẢN ĐỒ TRÍ NHỚ</span>'+
+        '<span style="font-size:13px"><b style="color:var(--indigo);font-size:16px">'+m+'</b> / '+DATA.length+' đã thuộc</span></div>'+
+      '<div class="grid">'+tiles+'</div>'+
+      '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="legend">'+
+        '<span><i class="sw" style="background:var(--stampNew)"></i>Chưa học</span>'+
+        '<span><i class="sw" style="background:var(--red)"></i>Còn yếu</span>'+
+        '<span><i class="sw" style="background:var(--amber)"></i>Gần thuộc</span>'+
+        '<span><i class="sw" style="background:var(--indigo)"></i>Đã thuộc</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="modes">'+
+      modeBtn("primary","quiz",IC.quiz("#fff"),"Luyện đề","Làm 13 câu như thi thật, chấm + phân tích ngay",false)+
+      modeBtn("ghost","flash",IC.cards("#213a6b"),"Lật thẻ","Ôn nhanh cả 13 câu bằng flashcard",false)+
+      modeBtn("ghost","focus",IC.focus(focusEnabled?"#c1553c":"#71787f"),
+        focusEnabled?("Ôn câu yếu ("+weak.length+")"):"Ôn câu yếu",
+        focusEnabled?"Chỉ lật lại những câu bạn chưa chắc":"Tuyệt vời — chưa có câu nào cần ôn thêm",
+        !focusEnabled)+
+    '</div>'+
+    '<div class="foot">Tiến độ được lưu tự động. Chạm một ô trên bản đồ để ôn riêng câu đó.</div>'+
+   '</div>';
+
+  app.querySelectorAll("[data-tile]").forEach(function(b){
+    b.addEventListener("click",function(){ startFlash([parseInt(b.getAttribute("data-tile"),10)]); });
+  });
+  bind("[data-act=reset]", function(){
+    if (typeof window!=="undefined" && window.confirm && !window.confirm("Xóa toàn bộ tiến độ đã lưu?")) return;
+    S.prog={}; saveProgress({}); renderHome();
+  });
+  bind("[data-mode=quiz]", startQuiz);
+  bind("[data-mode=flash]", function(){ startFlash(DATA.map(function(_,i){return i;})); });
+  var fb = app.querySelector("[data-mode=focus]");
+  if (fb && focusEnabled) fb.addEventListener("click", function(){ startFlash(weak); });
+}
+function modeBtn(kind,mode,icon,title,sub,disabled){
+  var ig = kind==="primary"?"rgba(255,255,255,.85)":"#213a6b";
+  var arrow = disabled?"":IC.fwd(ig);
+  return '<button class="mode '+kind+'" data-mode="'+mode+'"'+(disabled?" disabled":"")+'>'+
+    '<span class="ic">'+icon+'</span>'+
+    '<span class="tt"><b>'+title+'</b><span>'+sub+'</span></span>'+arrow+'</button>';
+}
+
+/* ============ RENDER: QUIZ ============ */
+function renderQuiz(){
+  var item = DATA[S.order[S.pos]];
+  var pct = Math.round((S.pos + (S.revealed?1:0))/S.order.length*100);
+  var opts = item.options.map(function(o,i){
+    var cls="opt", noteHTML="";
+    if(S.revealed){
+      cls+=" locked";
+      if(i===item.correct){ cls+=" correct"; }
+      else if(i===S.sel){ cls+=" wrong"; if(o.note) noteHTML='<div class="optnote bad">'+esc(o.note)+'</div>'; }
+      else { cls+=" dim"; if(o.note) noteHTML='<div class="optnote">'+esc(o.note)+'</div>'; }
+    }
+    var nbadge = (S.revealed && i===item.correct) ? IC.check("#1f8f63")
+               : (S.revealed && i===S.sel) ? IC.x("#c1553c")
+               : (i+1);
+    var nStyle = (S.revealed && (i===item.correct||i===S.sel)) ? "background:transparent" : "";
+    return '<div><button class="'+cls+'" data-opt="'+i+'"'+(S.revealed?" disabled":"")+'>'+
+      '<span class="n" style="'+nStyle+'">'+nbadge+'</span>'+
+      '<span class="txt">'+esc(o.t)+'</span></button>'+noteHTML+'</div>';
+  }).join("");
+
+  var hv = item.hanviet ? '<div class="hv">漢越 · '+esc(item.hanviet)+'</div>' : '';
+  var expl = S.revealed ? (
+    '<div class="expl fade"><div class="rd">'+esc(item.reading)+'</div>'+hv+
+    '<div class="mn">'+esc(item.meaning)+'</div><hr>'+
+    '<div class="ln"><b>Dịch · </b>'+esc(item.trans)+'</div>'+
+    '<div class="ln"><b>Mấu chốt · </b>'+esc(item.point)+'</div></div>'+
+    '<button class="cta" data-act="next">'+(S.pos+1>=S.order.length?"Xem kết quả":"Câu tiếp theo")+' '+IC.fwd("#fff")+'</button>'
+  ) : "";
+
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="card qcard">'+sentenceHTML(item,"quiz")+'</div>'+
+    '<div class="opts">'+opts+'</div>'+expl+'</div>';
+
+  bind("[data-act=exit]", goHome);
+  if(!S.revealed){
+    app.querySelectorAll("[data-opt]").forEach(function(b){
+      b.addEventListener("click",function(){ answer(parseInt(b.getAttribute("data-opt"),10)); });
+    });
+  }
+  bind("[data-act=next]", nextQuiz);
+}
+
+/* ============ RENDER: FLASH ============ */
+function renderFlash(){
+  var item = DATA[S.order[S.pos]];
+  var pct = Math.round(S.pos/S.order.length*100);
+  var hv = item.hanviet ? '<div class="hv">漢越 · '+esc(item.hanviet)+'</div>' : '';
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="flip'+(S.flipped?" on":"")+'" data-act="flip"><div class="inner">'+
+      '<div class="face front"><div class="kick">ĐỌC CÂU · Câu '+item.no+'</div>'+
+        sentenceHTML(item,"flash")+'<div class="tap">Chạm để lật ↺</div></div>'+
+      '<div class="face back"><div class="rd">'+esc(item.reading)+'</div>'+hv+
+        '<div class="mn">'+esc(item.meaning)+'</div><hr>'+
+        '<div class="ln"><b>Dịch:</b> '+esc(item.trans)+'</div>'+
+        '<div class="ln">'+esc(item.point)+'</div></div>'+
+    '</div></div>'+
+    '<div class="marks">'+
+      '<button class="mark no" data-mark="0">'+IC.x("#c1553c")+' Chưa nhớ</button>'+
+      '<button class="mark yes" data-mark="1">'+IC.check("#1f8f63")+' Đã nhớ</button>'+
+    '</div>'+
+    '<div class="foot">"Chưa nhớ" đưa câu về đầu hàng ôn; "Đã nhớ" nâng câu lên gần mức thuộc.</div>'+
+   '</div>';
+
+  bind("[data-act=exit]", goHome);
+  bind("[data-act=flip]", function(){ S.flipped=!S.flipped; app.querySelector(".flip").classList.toggle("on",S.flipped); });
+  app.querySelectorAll("[data-mark]").forEach(function(b){
+    b.addEventListener("click",function(e){ e.stopPropagation(); markFlash(b.getAttribute("data-mark")==="1"); });
+  });
+}
+
+/* ============ RENDER: DONE ============ */
+function renderDone(){
+  var ok = S.results.filter(function(r){return r.ok;}).length;
+  var wrong = S.results.filter(function(r){return !r.ok;});
+  var pct = Math.round(ok/S.results.length*100);
+  var wrongHTML;
+  if(wrong.length===0){
+    wrongHTML = '<div style="color:var(--green);font-weight:700;text-align:center">Trọn vẹn — không sai câu nào! 🎯</div>';
+  } else {
+    wrongHTML = '<div style="font-size:13px;color:var(--sub);margin-bottom:10px">Cần ôn lại '+wrong.length+' câu:</div>'+
+      '<div style="display:flex;flex-direction:column;gap:8px">'+
+      wrong.map(function(r){ var it=DATA[r.idx];
+        return '<div class="wrongrow"><span class="n">'+it.no+'</span>'+
+          '<span class="serif">'+esc(it.reading)+'</span>'+
+          '<span style="color:var(--sub);font-size:12.5px">· '+esc(it.meaning)+'</span></div>';
+      }).join("")+'</div>';
+  }
+  app.innerHTML = '<div class="done fade">'+
+    '<div class="lbl" style="letter-spacing:1px">KẾT QUẢ LUYỆN ĐỀ</div>'+
+    '<div class="score">'+ok+'<small>/'+S.results.length+'</small></div>'+
+    '<div class="muted" style="font-size:14px;margin-top:4px">đúng '+pct+'%</div>'+
+    '<div class="wrongbox">'+wrongHTML+'</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+
+      (wrong.length>0?'<button class="cta" data-act="review">Lật thẻ ôn '+wrong.length+' câu sai</button>':'')+
+      '<button class="cta ghost" data-act="home">Về trang chủ</button>'+
+    '</div></div>';
+  bind("[data-act=review]", function(){ var w=S.results.filter(function(r){return !r.ok;}).map(function(r){return r.idx;}); startFlash(w.length?w:DATA.map(function(_,i){return i;})); });
+  bind("[data-act=home]", goHome);
+}
+
+/* ============ SHARED ============ */
+function topbar(sec,pos,total,pct){
+  return '<div class="tb"><button class="link" data-act="exit">'+IC.back("#71787f")+' Thoát</button>'+
+    '<span class="chip">問題 '+sec+'</span>'+
+    '<span class="count">'+(pos+1)+' / '+total+'</span></div>'+
+    '<div class="tbbar"><i style="width:'+pct+'%"></i></div>';
+}
+function bind(sel, fn){ var el=app.querySelector(sel); if(el) el.addEventListener("click",fn); }
+
+/* ============ ACTIONS ============ */
+function goHome(){ S.view="home"; renderHome(); }
+function startQuiz(){ S.order=DATA.map(function(_,i){return i;}); S.pos=0; S.sel=null; S.revealed=false; S.results=[]; S.view="quiz"; renderQuiz(); }
+function startFlash(idxs){ S.order=(idxs&&idxs.length)?idxs:DATA.map(function(_,i){return i;}); S.pos=0; S.flipped=false; S.view="flash"; renderFlash(); }
+function answer(i){
+  if(S.revealed) return;
+  var item=DATA[S.order[S.pos]]; var ok=(i===item.correct);
+  S.sel=i; S.revealed=true; updateItem(item.id,ok); S.results.push({idx:S.order[S.pos],ok:ok});
+  renderQuiz();
+}
+function nextQuiz(){
+  if(S.pos+1>=S.order.length){ S.view="done"; renderDone(); return; }
+  S.pos++; S.sel=null; S.revealed=false; renderQuiz();
+}
+function markFlash(ok){
+  var item=DATA[S.order[S.pos]]; updateItem(item.id,ok);
+  if(S.pos+1>=S.order.length){ goHome(); return; }
+  S.pos++; S.flipped=false; renderFlash();
+}
+
+/* ============ BOOT ============ */
+loadProgress(function(p){ S.prog=p||{}; if(typeof location!=="undefined" && location.hash.indexOf("focus")>=0){ var w=weakIdx(); if(w.length){ startFlash(w); return; } } renderHome(); });
+</script>
+</body>
+</html>

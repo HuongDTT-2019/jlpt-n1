@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>藍 N1 記憶帳 — 2024/12 問題6・7</title>
+<style>
+  :root{
+    --bg:#eceef2; --paper:#fff; --ink:#1b232e; --sub:#71787f; --line:#e2e5ea;
+    --indigo:#213a6b; --indigoDim:#3a5691; --indigoSoft:#e9edf6;
+    --green:#1f8f63; --greenSoft:#e6f4ec; --red:#c1553c; --redSoft:#f8ebe6;
+    --amber:#c58a24; --amberSoft:#f8f0dd; --stampNew:#cfd4dc;
+    --serif:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS Mincho",serif;
+    --sans:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);
+    padding:20px 14px calc(40px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  .wrap{max-width:460px;margin:0 auto}
+  button{font-family:var(--sans);cursor:pointer}
+  .serif{font-family:var(--serif)}
+  .muted{color:var(--sub)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08)}
+  .row{display:flex;align-items:center}
+  .fade{animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){.fade{animation:none}*{transition:none!important}}
+
+  ruby{ruby-align:center}
+  rt{font-family:var(--sans);font-size:.5em;font-weight:400;color:var(--sub);letter-spacing:0}
+
+  .brand{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--indigo);letter-spacing:1px}
+  .brand small{font-size:15px;color:var(--sub);font-family:var(--sans);letter-spacing:0}
+  .sub13{font-size:13px;color:var(--sub);margin-top:2px}
+  .link{background:none;border:none;color:var(--sub);font-size:12px;display:flex;align-items:center;gap:5px;padding:4px}
+
+  .map{padding:18px 18px 16px}
+  .map .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .lbl{font-size:13px;color:var(--sub);letter-spacing:.5px}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .tile{aspect-ratio:1/1;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);
+    font-family:var(--serif);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative}
+  .tile.done{border-color:var(--indigo);background:var(--indigo);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+  .tile .dot{position:absolute;bottom:4px;width:14px;height:3px;border-radius:2px}
+  .bar{height:6px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:14px}
+  .bar > i{display:block;height:100%;background:var(--indigo);transition:width .5s}
+  .legend{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--sub);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+  .modes{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+  .mode{display:flex;align-items:center;gap:14px;text-align:left;width:100%;border-radius:16px;padding:15px 16px;border:none}
+  .mode .ic{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;flex-shrink:0}
+  .mode .tt{flex:1}
+  .mode .tt b{display:block;font-size:16px}
+  .mode .tt span{display:block;font-size:12.5px;margin-top:2px}
+  .mode.primary{background:var(--indigo);color:#fff;box-shadow:0 2px 8px rgba(33,58,107,.25)}
+  .mode.primary .ic{background:rgba(255,255,255,.15)}
+  .mode.primary .tt span{color:rgba(255,255,255,.8)}
+  .mode.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+  .mode.ghost .ic{background:var(--indigoSoft)}
+  .mode.ghost .tt span{color:var(--sub)}
+  .mode:disabled{opacity:.6;cursor:default}
+  .foot{text-align:center;margin-top:18px;font-size:11.5px;color:var(--sub);line-height:1.5}
+
+  .tb{display:flex;align-items:center;justify-content:space-between}
+  .chip-sec{font-size:12px;color:var(--indigo);background:var(--indigoSoft);padding:4px 10px;border-radius:20px;font-weight:600}
+  .count{font-size:13px;color:var(--sub);min-width:44px;text-align:right}
+  .tbbar{height:5px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:10px}
+  .tbbar > i{display:block;height:100%;background:var(--indigo);transition:width .35s}
+
+  .qcard{padding:22px 20px;margin-top:12px}
+  .sent{font-family:var(--serif);font-size:20px;line-height:2.15;color:var(--ink)}
+  .hi{color:var(--indigo);font-weight:700;padding:0 1px}
+  .blank{display:inline-block;min-width:54px;text-align:center;color:var(--indigoDim);font-weight:700;border-bottom:2px solid var(--indigoDim)}
+
+  /* ordering slots + tray */
+  .slot{display:inline-block;min-width:30px;padding:2px 8px;margin:3px 2px;border-radius:8px;
+    border:1.5px dashed var(--indigoDim);color:var(--indigo);font-weight:700;vertical-align:middle;line-height:1.5}
+  .slot.empty{color:var(--indigoDim)}
+  .slot.filled{border-style:solid;background:var(--indigoSoft);cursor:pointer}
+  .slot.ok{background:var(--greenSoft);border-color:var(--green);color:var(--green)}
+  .slot.ng{background:var(--redSoft);border-color:var(--red);color:var(--red)}
+  .slot .star{font-size:.68em;color:var(--amber);margin-left:1px;vertical-align:super}
+  .tray{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .chip{background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;
+    font-family:var(--serif);font-size:17px;cursor:pointer;line-height:1.4}
+  .chip:active{background:var(--indigoSoft)}
+  .chip.used{display:none}
+  .orderbtns{display:flex;gap:10px;margin-top:14px}
+  .hintline{font-size:12px;color:var(--sub);margin-top:12px}
+
+  .opts{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:var(--paper);
+    border:1.5px solid var(--line);border-radius:13px;padding:12px 14px;transition:background .15s,border-color .15s}
+  .opt .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;
+    background:var(--indigoSoft);color:var(--indigo);font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px}
+  .opt .txt{font-family:var(--serif);font-size:17px;line-height:1.6}
+  .opt.correct{background:var(--greenSoft);border-color:var(--green)}
+  .opt.wrong{background:var(--redSoft);border-color:var(--red)}
+  .opt.dim{opacity:.9}
+  .opt.dim .txt{color:var(--sub)}
+  .opt.locked{cursor:default}
+  .optnote{font-size:12.5px;color:var(--sub);padding:6px 8px 0 46px;line-height:1.5}
+  .optnote.bad{color:var(--red)}
+
+  .expl{margin-top:16px;background:var(--indigoSoft);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .expl .rd{font-family:var(--serif);font-size:18px;color:var(--indigo);font-weight:700}
+  .expl .assembled{font-family:var(--serif);font-size:17px;line-height:1.9;margin-top:6px;color:var(--ink)}
+  .expl .mn{font-size:14px;margin-top:4px}
+  .expl hr{border:none;border-top:1px solid var(--line);margin:11px 0}
+  .expl .ln{font-size:13.5px;line-height:1.62;margin-top:7px}
+  .expl .ln b{color:var(--indigo)}
+  .cta{margin-top:16px;width:100%;background:var(--indigo);color:#fff;border:none;border-radius:14px;
+    padding:14px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line);font-weight:600}
+  .cta:disabled{opacity:.5;cursor:default}
+
+  .flip{margin-top:12px;perspective:1200px}
+  .flip .inner{position:relative;min-height:300px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .flip.on .inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;
+    background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08);
+    padding:22px 20px;display:flex;flex-direction:column;justify-content:center;overflow:auto}
+  .face.back{transform:rotateY(180deg);background:var(--indigo);border:none}
+  .face .kick{font-size:12px;color:var(--sub);letter-spacing:1px;margin-bottom:12px}
+  .face .tap{margin-top:14px;font-size:12px;color:var(--sub)}
+  .face .fpieces{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .face .fpiece{border:1px solid var(--line);border-radius:9px;padding:5px 9px;font-family:var(--serif);font-size:14px}
+  .face.back .rd{font-family:var(--serif);font-size:19px;color:#fff;font-weight:700}
+  .face.back .assembled{font-family:var(--serif);font-size:15.5px;line-height:1.85;color:#fff;margin-top:4px}
+  .face.back .mn{font-size:14px;color:rgba(255,255,255,.92);margin-top:5px}
+  .face.back hr{border:none;border-top:1px solid rgba(255,255,255,.25);margin:11px 0}
+  .face.back .ln{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.55;margin-top:6px}
+  .face.back .ln b{color:#fff}
+  .marks{display:flex;gap:10px;margin-top:16px}
+  .mark{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:14px;font-size:15px;font-weight:700}
+  .mark.no{background:var(--redSoft);color:var(--red);border:1.5px solid var(--red)}
+  .mark.yes{background:var(--greenSoft);color:var(--green);border:1.5px solid var(--green)}
+
+  .done{text-align:center;padding-top:20px}
+  .score{font-family:var(--serif);font-size:56px;font-weight:700;color:var(--indigo);margin-top:6px;line-height:1}
+  .score small{font-size:26px;color:var(--sub)}
+  .wrongbox{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:22px;text-align:left}
+  .wrongrow{display:flex;align-items:center;gap:10px;font-size:14px}
+  .wrongrow .n{width:24px;height:24px;border-radius:7px;background:var(--redSoft);color:var(--red);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+
+<script>
+/* ============ DATA (2024/12 · 問題6・7 · Q36–44) ============
+   type "order" (問題6): xếp 4 mảnh; type "cloze" (問題7): điền chỗ trống trong đoạn. Furigana 漢字[よみ]. */
+var DATA = [
+ /* ---------- 問題6 · 並べ替え (36–40) ---------- */
+ {id:"q36",no:36,sec:"並べ替え",type:"order",
+  pre:"昨日[きのう]はとても寒[さむ]く、", post:"ずっと雪[ゆき]が降[ふ]っていた。",
+  pieces:[{n:1,f:"が"},{n:2,f:"こそ"},{n:3,f:"積[つ]もらなかった"},{n:4,f:"午前中[ごぜんちゅう]"}],
+  correctOrder:[4,2,3,1], starPos:3,
+  trans:"Hôm qua rất lạnh, chỉ riêng buổi sáng thì (tuyết) không đọng lại, nhưng tuyết cứ rơi suốt.",
+  point:"Trục chính: 午前中こそ…が (chỉ riêng buổi sáng thì… nhưng). こそ nhấn 午前中; 積もらなかったが nối tương phản với “tuyết rơi suốt”."},
+ {id:"q37",no:37,sec:"並べ替え",type:"order",
+  pre:"この映画[えいが]はあまりにも正直[しょうじき]で", post:"、コメディー作品[さくひん]だ。",
+  pieces:[{n:1,f:"真面目[まじめ]すぎる"},{n:2,f:"周[まわ]りの人々[ひとびと]とのトラブルが絶[た]えない"},{n:3,f:"がゆえに"},{n:4,f:"男[おとこ]の日常[にちじょう]を描[えが]いた"}],
+  correctOrder:[1,3,2,4], starPos:3,
+  trans:"Bộ phim này là tác phẩm hài khắc họa đời thường của một người đàn ông mà chính vì quá thật thà, nghiêm túc nên rắc rối với người xung quanh cứ liên miên.",
+  point:"〜がゆえに (chính vì ~ nên) nối 真面目すぎる với hệ quả トラブルが絶えない; cụm này bổ nghĩa cho 男の日常を描いた…作品."},
+ {id:"q38",no:38,sec:"並べ替え",type:"order",
+  pre:"", post:"読[よ]みやすいように、最近[さいきん]は、ビジネス理論[りろん]を漫画[まんが]でわかりやすく解説[かいせつ]したものが多[おお]い。",
+  pieces:[{n:1,f:"堅苦[かたくる]しいものと思[おも]われがちだが"},{n:2,f:"抵抗[ていこう]がある人[ひと]にも"},{n:3,f:"一般的[いっぱんてき]にビジネス書[しょ]というと"},{n:4,f:"ビジネス書[しょ]に"}],
+  correctOrder:[3,1,4,2], starPos:3,
+  trans:"Nói đến sách kinh doanh, người ta thường nghĩ là khô khan; nhưng để cả những người ngại sách kinh doanh cũng đọc dễ vào, gần đây có nhiều cuốn giải thích lý thuyết kinh doanh bằng manga cho dễ hiểu.",
+  point:"一般的に…というと〜がちだが (nói đến X thì thường… nhưng); rồi ビジネス書に抵抗がある人にも (cả người ngại sách KD) → 読みやすいように."},
+ {id:"q39",no:39,sec:"並べ替え",type:"order",
+  pre:"渋滞[じゅうたい]の中[なか]を", post:"遊園地[ゆうえんち]に入[はい]る前[まえ]から疲[つか]れてしまった。",
+  pieces:[{n:1,f:"今度[こんど]は"},{n:2,f:"3時間[じかん]運転[うんてん]して"},{n:3,f:"駐車場[ちゅうしゃじょう]が混雑[こんざつ]していて"},{n:4,f:"ようやくついたと思[おも]ったら"}],
+  correctOrder:[2,4,1,3], starPos:3,
+  trans:"Lái xe 3 tiếng trong cảnh kẹt xe, vừa tưởng đã đến nơi thì lần này bãi đỗ lại đông nghịt, mệt nhoài từ trước cả khi vào công viên.",
+  point:"Mạch thời gian: 3時間運転して→ようやくついたと思ったら→今度は→駐車場が混雑していて. 今度は (lần này lại) đứng trước rắc rối mới."},
+ {id:"q40",no:40,sec:"並べ替え",type:"order",
+  pre:"商品[しょうひん]やサービスが", post:"ない。",
+  pieces:[{n:1,f:"売[う]れるも売[う]れないも"},{n:2,f:"その存在[そんざい]が"},{n:3,f:"知[し]られないことには"},{n:4,f:"どんなに良[よ]い物[もの]でも"}],
+  correctOrder:[4,2,3,1], starPos:3,
+  trans:"Sản phẩm hay dịch vụ, dù tốt đến mấy, một khi sự tồn tại của nó không được biết đến thì bán chạy hay ế cũng chẳng nói tới được.",
+  point:"〜ないことには…ない (nếu không ~ thì không thể…). どんなに良い物でも→その存在が→知られないことには→売れるも売れないも→ない."},
+
+ /* ---------- 問題7 · 文章文法 (41–44) 「寂しい片耳」 ---------- */
+ {id:"q41",no:41,sec:"文章文法",type:"cloze",
+  context:"ようやく一息[ひといき]ついてらっしゃる編集者[へんしゅうしゃ]さんたちに、（　）。動揺[どうよう]を押[お]し殺[ころ]してさりげなく周[まわ]りを見回[みまわ]し…",
+  options:[{t:"気を使えはしない",note:"“không thể để tâm” — sai nghĩa"},{t:"気を使ってなどいない",note:"“tôi chẳng bận tâm gì” — mâu thuẫn với 動揺を押し殺して (đang cố nén)"},{t:"気を使わせられはしない",note:"thể sai khiến–bị động, sai nghĩa trong ngữ cảnh"},{t:"気をつかわせてなどいない"}],correct:3,
+  answer:"気をつかわせてなどいない",meaning:"quyết không làm cho (họ) phải bận tâm",
+  trans:"Với các biên tập viên vừa mới được thảnh thơi đôi chút, tôi tuyệt nhiên không để họ phải bận tâm; nén nỗi xao động, tôi kín đáo nhìn quanh…",
+  point:"Cô giấu chuyện mất khuyên để KHÔNG khiến biên tập viên (đang nghỉ) bận lòng → thể sai khiến 使わせる + などいない (phủ định nhấn)."},
+ {id:"q42",no:42,sec:"文章文法",type:"cloze",
+  context:"親[した]しいお店[みせ]で作[つく]っていただいたピアスなので、片方[かたほう]だけ発注[はっちゅう]するのは難[むずか]しくない。（　）自分[じぶん]でも珍[めずら]しいほど落[お]ち込[こ]んだのは、それが三、四年[よねん]ぶりの落[お]とし物[もの]だったからだ。",
+  options:[{t:"それによって",note:"“nhờ đó” (nhân–quả) — sai"},{t:"そればかりでなく",note:"“không chỉ vậy” (bổ sung) — sai"},{t:"それどころか",note:"“trái lại còn…” — sai mạch"},{t:"それにもかかわらず"}],correct:3,
+  answer:"それにもかかわらず",meaning:"mặc dù vậy, bất chấp điều đó",
+  trans:"Vì là khuyên tai đặt ở tiệm quen nên đặt lại một chiếc cũng không khó. Vậy mà tôi lại buồn đến mức chính mình cũng thấy lạ, là vì đó là lần đầu đánh rơi đồ sau ba, bốn năm.",
+  point:"Vế trước “thay thế dễ” tương phản với “buồn bất thường” → それにもかかわらず (dù vậy)."},
+ {id:"q43",no:43,sec:"文章文法",type:"cloze",
+  context:"最初[さいしょ]から自分[じぶん]の迂闊[うかつ]さを（　）、何[なに]を落[お]とそうともがっかりはしない。もはやそんなことはあるまいと高[たか]を括[くく]っていただけに…",
+  options:[{t:"承知していれば"},{t:"承知していて",note:"“đang biết rõ” (nối liên tục) — sai mạch điều kiện"},{t:"承知していたのか",note:"“có phải đã biết…?” — sai"},{t:"承知していたかのように",note:"“như thể đã biết” — sai nghĩa"}],correct:0,
+  answer:"承知していれば",meaning:"giá mà (từ đầu) đã ý thức được ~ thì…",
+  trans:"Giá từ đầu tôi đã ý thức được sự hậu đậu của mình thì rơi mất gì cũng chẳng thấy tiếc. Chính vì đã chủ quan cho rằng chuyện đó không còn xảy ra nữa…",
+  point:"Mạch “giá mà đã biết thì đã không tiếc” → điều kiện 〜ていれば. Câu sau cho thấy thực tế cô đã KHÔNG ý thức được (chủ quan)."},
+ {id:"q44",no:44,sec:"文章文法",type:"cloze",
+  context:"だがそもそも、年[とし]を重[かさ]ねたから失敗[しっぱい]をしないというのは、幻想[げんそう]だ。ピアス（　）、最近[さいきん]たまたま落[お]とさない日々[ひび]が続[つづ]いていただけで…",
+  options:[{t:"なら",note:"“nếu là khuyên” (giả định/chủ đề) — nhạt nghĩa"},{t:"だって"},{t:"でさえ",note:"“ngay cả khuyên” (ví dụ cực đoan) — không hợp mạch"},{t:"といって",note:"“gọi là ~” — sai"}],correct:1,
+  answer:"だって",meaning:"ngay cả ~ cũng (không ngoại lệ)",
+  trans:"Nhưng nói cho cùng, nghĩ rằng có tuổi thì không mắc lỗi vốn là ảo tưởng. Ngay cả chuyện khuyên tai cũng vậy — chẳng qua gần đây tình cờ có chuỗi ngày không đánh rơi mà thôi…",
+  point:"Nối với ý “có tuổi không phạm lỗi là ảo tưởng”: ピアスだって = ngay cả (chuyện) khuyên cũng không ngoại lệ. だって (khẩu ngữ) hợp giọng tự sự."}
+];
+
+var MASTER = 4;
+
+/* ============ STORAGE ============ */
+var KEY = "n1-2024-12-mondai-6-7";
+var mem = {};
+function loadProgress(cb){
+  var p = {};
+  try { var raw = localStorage.getItem(KEY); if (raw) p = JSON.parse(raw); }
+  catch(e){ p = mem; }
+  cb(p || {});
+}
+function saveProgress(p){ mem = p; try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(e){} }
+
+/* ============ STATE ============ */
+var S = { prog:{}, view:"home", order:[], pos:0, sel:null, revealed:false, flipped:false, results:[], arr:[], disp:[] };
+var app = document.getElementById("app");
+
+function nextBox(box, ok){ return ok ? Math.min(5,(box||0)+1) : 1; }
+function stampColor(box){ if(!box) return "var(--stampNew)"; if(box>=MASTER) return "var(--indigo)"; if(box===3) return "var(--amber)"; return "var(--red)"; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function furi(s){ s = esc(s); return s.replace(/([\u4e00-\u9fff々〆ヶ]+)\[([\u3040-\u30ffー]+)\]/g,'<ruby>$1<rt>$2</rt></ruby>'); }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function pieceByN(item,n){ for(var i=0;i<item.pieces.length;i++){ if(item.pieces[i].n===n) return item.pieces[i]; } return null; }
+
+function updateItem(id, ok){
+  var cur = S.prog[id] || {box:0,seen:0,correct:0,wrong:0};
+  S.prog[id] = { box: nextBox(cur.box,ok), seen:cur.seen+1, correct:cur.correct+(ok?1:0), wrong:cur.wrong+(ok?0:1) };
+  saveProgress(S.prog);
+}
+function mastered(){ var n=0; DATA.forEach(function(d){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)>=MASTER) n++; }); return n; }
+function weakIdx(){ var r=[]; DATA.forEach(function(d,i){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)<MASTER) r.push(i); }); return r; }
+
+/* ============ ICONS ============ */
+var IC = {
+  check:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';},
+  x:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';},
+  back:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';},
+  fwd:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';},
+  reset:function(c){return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>';},
+  quiz:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';},
+  cards:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="16" rx="2"/><path d="M7 5V3.5A1.5 1.5 0 0 1 8.5 2H19a2 2 0 0 1 2 2v13"/></svg>';},
+  focus:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>';}
+};
+
+/* ============ ORDER helpers ============ */
+function assembledHTML(item, cls){
+  var out = furi(item.pre);
+  for(var k=0;k<4;k++){
+    var pc = pieceByN(item, item.correctOrder[k]);
+    var star = (k+1===item.starPos);
+    out += '<span'+(star?' style="color:var(--amber);font-weight:700"':'')+'>'+furi(pc.f)+'</span>';
+  }
+  out += furi(item.post);
+  return '<span class="'+(cls||"")+'">'+out+'</span>';
+}
+function orderSentenceHTML(item){
+  var out = furi(item.pre);
+  for(var k=0;k<4;k++){
+    var star = (k+1===item.starPos);
+    var starMark = star ? '<span class="star">★</span>' : '';
+    if(S.arr[k]!=null){
+      var pc = pieceByN(item, S.arr[k]);
+      var cc = "";
+      if(S.revealed){ cc = (S.arr[k]===item.correctOrder[k]) ? " ok" : " ng"; }
+      out += '<span class="slot filled'+cc+'" data-slot="'+k+'">'+furi(pc.f)+starMark+'</span>';
+    } else {
+      out += '<span class="slot empty" data-slot="'+k+'">'+(star?starMark:'&nbsp;&nbsp;')+'</span>';
+    }
+  }
+  out += furi(item.post);
+  return '<span class="sent">'+out+'</span>';
+}
+
+/* ============ RENDER: HOME ============ */
+function renderHome(){
+  var m = mastered(), weak = weakIdx(), pct = Math.round(m/DATA.length*100);
+  var tiles = DATA.map(function(d,i){
+    var box = (S.prog[d.id]&&S.prog[d.id].box)||0, done = box>=MASTER, c = stampColor(box);
+    var dot = (!done && box>0) ? '<span class="dot" style="background:'+c+'"></span>' : '';
+    var style = done ? '' : ('color:'+c);
+    return '<button class="tile'+(done?' done':'')+'" data-tile="'+i+'" style="'+style+'">'+d.no+dot+'</button>';
+  }).join("");
+  var focusEnabled = weak.length>0;
+  app.innerHTML =
+   '<div class="fade">'+
+    '<div class="row" style="justify-content:space-between;align-items:flex-end;margin-bottom:18px">'+
+      '<div><div class="brand">藍 <small>N1 記憶帳</small></div>'+
+      '<div class="sub13">2024/12 · 問題6・7 · 文法 (Q36–44)</div></div>'+
+      '<button class="link" data-act="reset" title="Xóa tiến độ">'+IC.reset("#71787f")+' Đặt lại</button>'+
+    '</div>'+
+    '<div class="card map">'+
+      '<div class="top"><span class="lbl">BẢN ĐỒ TRÍ NHỚ</span>'+
+        '<span style="font-size:13px"><b style="color:var(--indigo);font-size:16px">'+m+'</b> / '+DATA.length+' đã thuộc</span></div>'+
+      '<div class="grid">'+tiles+'</div>'+
+      '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="legend">'+
+        '<span><i class="sw" style="background:var(--stampNew)"></i>Chưa học</span>'+
+        '<span><i class="sw" style="background:var(--red)"></i>Còn yếu</span>'+
+        '<span><i class="sw" style="background:var(--amber)"></i>Gần thuộc</span>'+
+        '<span><i class="sw" style="background:var(--indigo)"></i>Đã thuộc</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="modes">'+
+      modeBtn("primary","quiz",IC.quiz("#fff"),"Luyện đề","Làm 9 câu như thi thật, chấm + phân tích ngay",false)+
+      modeBtn("ghost","flash",IC.cards("#213a6b"),"Lật thẻ","Ôn nhanh 9 câu bằng flashcard",false)+
+      modeBtn("ghost","focus",IC.focus(focusEnabled?"#c1553c":"#71787f"),
+        focusEnabled?("Ôn câu yếu ("+weak.length+")"):"Ôn câu yếu",
+        focusEnabled?"Chỉ lật lại những câu bạn chưa chắc":"Tuyệt vời — chưa có câu nào cần ôn thêm",
+        !focusEnabled)+
+    '</div>'+
+    '<div class="foot">問題6: chạm mảnh để xếp vào ô, ★ là ô cần trả lời. Chạm ô trên bản đồ để ôn riêng.</div>'+
+   '</div>';
+
+  app.querySelectorAll("[data-tile]").forEach(function(b){ b.addEventListener("click",function(){ startFlash([parseInt(b.getAttribute("data-tile"),10)]); }); });
+  bind("[data-act=reset]", function(){
+    if (typeof window!=="undefined" && window.confirm && !window.confirm("Xóa toàn bộ tiến độ đã lưu?")) return;
+    S.prog={}; saveProgress({}); renderHome();
+  });
+  bind("[data-mode=quiz]", startQuiz);
+  bind("[data-mode=flash]", function(){ startFlash(DATA.map(function(_,i){return i;})); });
+  var fb = app.querySelector("[data-mode=focus]");
+  if (fb && focusEnabled) fb.addEventListener("click", function(){ startFlash(weak); });
+}
+function modeBtn(kind,mode,icon,title,sub,disabled){
+  var ig = kind==="primary"?"rgba(255,255,255,.85)":"#213a6b";
+  var arrow = disabled?"":IC.fwd(ig);
+  return '<button class="mode '+kind+'" data-mode="'+mode+'"'+(disabled?" disabled":"")+'>'+
+    '<span class="ic">'+icon+'</span>'+
+    '<span class="tt"><b>'+title+'</b><span>'+sub+'</span></span>'+arrow+'</button>';
+}
+
+/* ============ RENDER: QUIZ router ============ */
+function renderQuiz(){
+  var item = DATA[S.order[S.pos]];
+  if(item.type==="order") renderOrder(item); else renderCloze(item);
+}
+
+/* ---- ORDER ---- */
+function renderOrder(item){
+  var pct = Math.round((S.pos + (S.revealed?1:0))/S.order.length*100);
+  var filledCount = S.arr.filter(function(x){return x!=null;}).length;
+  var tray = S.disp.map(function(n){
+    var used = S.arr.indexOf(n)>=0;
+    var pc = pieceByN(item,n);
+    return '<button class="chip'+(used?' used':'')+'" data-piece="'+n+'"'+(S.revealed?' disabled':'')+'>'+furi(pc.f)+'</button>';
+  }).join("");
+
+  var controls;
+  if(S.revealed){
+    controls =
+      '<div class="expl fade"><div class="rd">Thứ tự đúng</div>'+
+      assembledHTML(item,"assembled")+'<hr>'+
+      '<div class="ln"><b>★ (ô '+item.starPos+') = </b>'+furi(pieceByN(item,item.correctOrder[item.starPos-1]).f)+'</div>'+
+      '<div class="ln"><b>Dịch · </b>'+esc(item.trans)+'</div>'+
+      '<div class="ln"><b>Mấu chốt · </b>'+esc(item.point)+'</div></div>'+
+      '<button class="cta" data-act="next">'+(S.pos+1>=S.order.length?"Xem kết quả":"Câu tiếp theo")+' '+IC.fwd("#fff")+'</button>';
+  } else {
+    controls =
+      '<div class="orderbtns">'+
+        '<button class="cta ghost" data-act="clear" style="margin-top:0">Xóa hết</button>'+
+        '<button class="cta" data-act="check" style="margin-top:0"'+(filledCount<4?' disabled':'')+'>Kiểm tra</button>'+
+      '</div>'+
+      '<div class="hintline">Chạm mảnh bên dưới để lần lượt điền vào ô. Chạm ô đã điền để bỏ ra.</div>';
+  }
+
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="card qcard">'+orderSentenceHTML(item)+'</div>'+
+    '<div class="tray">'+tray+'</div>'+
+    controls+'</div>';
+
+  bind("[data-act=exit]", goHome);
+  if(!S.revealed){
+    app.querySelectorAll("[data-piece]").forEach(function(b){
+      if(b.classList.contains("used")) return;
+      b.addEventListener("click",function(){ placePiece(parseInt(b.getAttribute("data-piece"),10)); });
+    });
+    app.querySelectorAll(".slot.filled").forEach(function(s){
+      s.addEventListener("click",function(){ clearSlot(parseInt(s.getAttribute("data-slot"),10)); });
+    });
+    bind("[data-act=clear]", function(){ S.arr=[null,null,null,null]; renderQuiz(); });
+    bind("[data-act=check]", checkOrder);
+  }
+  bind("[data-act=next]", nextQuiz);
+}
+function placePiece(n){
+  if(S.revealed) return;
+  if(S.arr.indexOf(n)>=0) return;
+  for(var k=0;k<4;k++){ if(S.arr[k]==null){ S.arr[k]=n; break; } }
+  renderQuiz();
+}
+function clearSlot(k){ if(S.revealed) return; S.arr[k]=null; renderQuiz(); }
+function checkOrder(){
+  var item=DATA[S.order[S.pos]];
+  if(S.arr.filter(function(x){return x!=null;}).length<4) return;
+  var ok = S.arr.join(",")===item.correctOrder.join(",");
+  S.revealed=true; updateItem(item.id, ok); S.results.push({idx:S.order[S.pos],ok:ok});
+  renderQuiz();
+}
+
+/* ---- CLOZE ---- */
+function renderCloze(item){
+  var pct = Math.round((S.pos + (S.revealed?1:0))/S.order.length*100);
+  var parts = (item.context||"").split("（　）");
+  var sent = '<span class="sent">'+furi(parts[0]||"")+'<span class="blank">（　）</span>'+furi(parts[1]||"")+'</span>';
+  var opts = item.options.map(function(o,i){
+    var cls="opt", noteHTML="";
+    if(S.revealed){
+      cls+=" locked";
+      if(i===item.correct){ cls+=" correct"; }
+      else if(i===S.sel){ cls+=" wrong"; if(o.note) noteHTML='<div class="optnote bad">'+esc(o.note)+'</div>'; }
+      else { cls+=" dim"; if(o.note) noteHTML='<div class="optnote">'+esc(o.note)+'</div>'; }
+    }
+    var nbadge = (S.revealed && i===item.correct) ? IC.check("#1f8f63")
+               : (S.revealed && i===S.sel) ? IC.x("#c1553c") : (i+1);
+    var nStyle = (S.revealed && (i===item.correct||i===S.sel)) ? "background:transparent" : "";
+    return '<div><button class="'+cls+'" data-opt="'+i+'"'+(S.revealed?" disabled":"")+'>'+
+      '<span class="n" style="'+nStyle+'">'+nbadge+'</span>'+
+      '<span class="txt">'+esc(o.t)+'</span></button>'+noteHTML+'</div>';
+  }).join("");
+
+  var expl = S.revealed ? (
+    '<div class="expl fade"><div class="rd">'+esc(item.answer)+'</div>'+
+    '<div class="mn">'+esc(item.meaning)+'</div><hr>'+
+    '<div class="ln"><b>Dịch · </b>'+esc(item.trans)+'</div>'+
+    '<div class="ln"><b>Mấu chốt · </b>'+esc(item.point)+'</div></div>'+
+    '<button class="cta" data-act="next">'+(S.pos+1>=S.order.length?"Xem kết quả":"Câu tiếp theo")+' '+IC.fwd("#fff")+'</button>'
+  ) : "";
+
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="card qcard">'+sent+'</div>'+
+    '<div class="opts">'+opts+'</div>'+expl+'</div>';
+
+  bind("[data-act=exit]", goHome);
+  if(!S.revealed){
+    app.querySelectorAll("[data-opt]").forEach(function(b){
+      b.addEventListener("click",function(){ answer(parseInt(b.getAttribute("data-opt"),10)); });
+    });
+  }
+  bind("[data-act=next]", nextQuiz);
+}
+
+/* ============ RENDER: FLASH ============ */
+function renderFlash(){
+  var item = DATA[S.order[S.pos]];
+  var pct = Math.round(S.pos/S.order.length*100);
+  var front, back;
+  if(item.type==="order"){
+    var frame = furi(item.pre)+' ＿ ＿ ★ ＿ '+furi(item.post);
+    var chips = item.pieces.slice().sort(function(a,b){return a.n-b.n;})
+      .map(function(p){ return '<span class="fpiece">'+p.n+'. '+furi(p.f)+'</span>'; }).join("");
+    front = '<div class="kick">SẮP XẾP · Câu '+item.no+'</div>'+
+      '<span class="sent" style="font-size:17px">'+frame+'</span>'+
+      '<div class="fpieces">'+chips+'</div><div class="tap">Chạm để lật ↺</div>';
+    back = '<div class="rd">Thứ tự đúng</div>'+assembledHTML(item,"assembled")+'<hr>'+
+      '<div class="ln"><b>★ (ô '+item.starPos+') = </b>'+furi(pieceByN(item,item.correctOrder[item.starPos-1]).f)+'</div>'+
+      '<div class="ln"><b>Dịch:</b> '+esc(item.trans)+'</div>'+
+      '<div class="ln">'+esc(item.point)+'</div>';
+  } else {
+    var parts = (item.context||"").split("（　）");
+    front = '<div class="kick">ĐIỀN ĐOẠN VĂN · Câu '+item.no+'</div>'+
+      '<span class="sent" style="font-size:18px">'+furi(parts[0]||"")+'<span class="blank">（　）</span>'+furi(parts[1]||"")+'</span>'+
+      '<div class="tap">Chạm để lật ↺</div>';
+    back = '<div class="rd">'+esc(item.answer)+'</div>'+
+      '<div class="mn">'+esc(item.meaning)+'</div><hr>'+
+      '<div class="ln"><b>Dịch:</b> '+esc(item.trans)+'</div>'+
+      '<div class="ln">'+esc(item.point)+'</div>';
+  }
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="flip'+(S.flipped?" on":"")+'" data-act="flip"><div class="inner">'+
+      '<div class="face front">'+front+'</div>'+
+      '<div class="face back">'+back+'</div>'+
+    '</div></div>'+
+    '<div class="marks">'+
+      '<button class="mark no" data-mark="0">'+IC.x("#c1553c")+' Chưa nhớ</button>'+
+      '<button class="mark yes" data-mark="1">'+IC.check("#1f8f63")+' Đã nhớ</button>'+
+    '</div>'+
+    '<div class="foot">"Chưa nhớ" đưa câu về đầu hàng ôn; "Đã nhớ" nâng câu lên gần mức thuộc.</div>'+
+   '</div>';
+
+  bind("[data-act=exit]", goHome);
+  bind("[data-act=flip]", function(){ S.flipped=!S.flipped; app.querySelector(".flip").classList.toggle("on",S.flipped); });
+  app.querySelectorAll("[data-mark]").forEach(function(b){
+    b.addEventListener("click",function(e){ e.stopPropagation(); markFlash(b.getAttribute("data-mark")==="1"); });
+  });
+}
+
+/* ============ RENDER: DONE ============ */
+function renderDone(){
+  var ok = S.results.filter(function(r){return r.ok;}).length;
+  var wrong = S.results.filter(function(r){return !r.ok;});
+  var pct = Math.round(ok/S.results.length*100);
+  var wrongHTML;
+  if(wrong.length===0){
+    wrongHTML = '<div style="color:var(--green);font-weight:700;text-align:center">Trọn vẹn — không sai câu nào! 🎯</div>';
+  } else {
+    wrongHTML = '<div style="font-size:13px;color:var(--sub);margin-bottom:10px">Cần ôn lại '+wrong.length+' câu:</div>'+
+      '<div style="display:flex;flex-direction:column;gap:8px">'+
+      wrong.map(function(r){ var it=DATA[r.idx];
+        var label = it.type==="order" ? "並べ替え (xếp câu)" : it.answer;
+        return '<div class="wrongrow"><span class="n">'+it.no+'</span>'+
+          '<span class="serif">'+esc(label)+'</span>'+
+          (it.type==="cloze"?'<span style="color:var(--sub);font-size:12.5px">· '+esc(it.meaning)+'</span>':'')+'</div>';
+      }).join("")+'</div>';
+  }
+  app.innerHTML = '<div class="done fade">'+
+    '<div class="lbl" style="letter-spacing:1px">KẾT QUẢ LUYỆN ĐỀ</div>'+
+    '<div class="score">'+ok+'<small>/'+S.results.length+'</small></div>'+
+    '<div class="muted" style="font-size:14px;margin-top:4px">đúng '+pct+'%</div>'+
+    '<div class="wrongbox">'+wrongHTML+'</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+
+      (wrong.length>0?'<button class="cta" data-act="review">Lật thẻ ôn '+wrong.length+' câu sai</button>':'')+
+      '<button class="cta ghost" data-act="home">Về trang chủ</button>'+
+    '</div></div>';
+  bind("[data-act=review]", function(){ var w=S.results.filter(function(r){return !r.ok;}).map(function(r){return r.idx;}); startFlash(w.length?w:DATA.map(function(_,i){return i;})); });
+  bind("[data-act=home]", goHome);
+}
+
+/* ============ SHARED ============ */
+function topbar(sec,pos,total,pct){
+  return '<div class="tb"><button class="link" data-act="exit">'+IC.back("#71787f")+' Thoát</button>'+
+    '<span class="chip-sec">問題 '+sec+'</span>'+
+    '<span class="count">'+(pos+1)+' / '+total+'</span></div>'+
+    '<div class="tbbar"><i style="width:'+pct+'%"></i></div>';
+}
+function bind(sel, fn){ var el=app.querySelector(sel); if(el) el.addEventListener("click",fn); }
+
+/* ============ ACTIONS ============ */
+function initOrderState(){
+  var item=DATA[S.order[S.pos]];
+  if(item.type==="order"){ S.arr=[null,null,null,null]; S.disp=shuffle(item.pieces.map(function(p){return p.n;})); }
+}
+function goHome(){ S.view="home"; renderHome(); }
+function startQuiz(){ S.order=DATA.map(function(_,i){return i;}); S.pos=0; S.sel=null; S.revealed=false; S.results=[]; S.view="quiz"; initOrderState(); renderQuiz(); }
+function startFlash(idxs){ S.order=(idxs&&idxs.length)?idxs:DATA.map(function(_,i){return i;}); S.pos=0; S.flipped=false; S.view="flash"; renderFlash(); }
+function answer(i){
+  if(S.revealed) return;
+  var item=DATA[S.order[S.pos]]; var ok=(i===item.correct);
+  S.sel=i; S.revealed=true; updateItem(item.id,ok); S.results.push({idx:S.order[S.pos],ok:ok});
+  renderQuiz();
+}
+function nextQuiz(){
+  if(S.pos+1>=S.order.length){ S.view="done"; renderDone(); return; }
+  S.pos++; S.sel=null; S.revealed=false; initOrderState(); renderQuiz();
+}
+function markFlash(ok){
+  var item=DATA[S.order[S.pos]]; updateItem(item.id,ok);
+  if(S.pos+1>=S.order.length){ goHome(); return; }
+  S.pos++; S.flipped=false; renderFlash();
+}
+
+/* ============ BOOT ============ */
+loadProgress(function(p){ S.prog=p||{}; if(typeof location!=="undefined" && location.hash.indexOf("focus")>=0){ var w=weakIdx(); if(w.length){ startFlash(w); return; } } renderHome(); });
+</script>
+</body>
+</html>

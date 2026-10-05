@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>藍 N1 記憶帳 — 2024/12 問題8</title>
+<style>
+  :root{
+    --bg:#eceef2; --paper:#fff; --ink:#1b232e; --sub:#71787f; --line:#e2e5ea;
+    --indigo:#213a6b; --indigoDim:#3a5691; --indigoSoft:#e9edf6;
+    --green:#1f8f63; --greenSoft:#e6f4ec; --red:#c1553c; --redSoft:#f8ebe6;
+    --amber:#c58a24; --amberSoft:#f8f0dd; --stampNew:#cfd4dc;
+    --serif:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS Mincho",serif;
+    --sans:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);
+    padding:20px 14px calc(40px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  .wrap{max-width:460px;margin:0 auto}
+  button{font-family:var(--sans);cursor:pointer}
+  .serif{font-family:var(--serif)}
+  .muted{color:var(--sub)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08)}
+  .row{display:flex;align-items:center}
+  .fade{animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){.fade{animation:none}*{transition:none!important}}
+
+  ruby{ruby-align:center}
+  rt{font-family:var(--sans);font-size:.5em;font-weight:400;color:var(--sub);letter-spacing:0}
+
+  .brand{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--indigo);letter-spacing:1px}
+  .brand small{font-size:15px;color:var(--sub);font-family:var(--sans);letter-spacing:0}
+  .sub13{font-size:13px;color:var(--sub);margin-top:2px}
+  .link{background:none;border:none;color:var(--sub);font-size:12px;display:flex;align-items:center;gap:5px;padding:4px}
+
+  .map{padding:18px 18px 16px}
+  .map .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .lbl{font-size:13px;color:var(--sub);letter-spacing:.5px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .tile{aspect-ratio:1/1;border-radius:10px;border:1.5px solid var(--line);background:var(--paper);
+    font-family:var(--serif);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative}
+  .tile.done{border-color:var(--indigo);background:var(--indigo);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25)}
+  .tile .dot{position:absolute;bottom:4px;width:14px;height:3px;border-radius:2px}
+  .bar{height:6px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:14px}
+  .bar > i{display:block;height:100%;background:var(--indigo);transition:width .5s}
+  .legend{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--sub);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+  .modes{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+  .mode{display:flex;align-items:center;gap:14px;text-align:left;width:100%;border-radius:16px;padding:15px 16px;border:none}
+  .mode .ic{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;flex-shrink:0}
+  .mode .tt{flex:1}
+  .mode .tt b{display:block;font-size:16px}
+  .mode .tt span{display:block;font-size:12.5px;margin-top:2px}
+  .mode.primary{background:var(--indigo);color:#fff;box-shadow:0 2px 8px rgba(33,58,107,.25)}
+  .mode.primary .ic{background:rgba(255,255,255,.15)}
+  .mode.primary .tt span{color:rgba(255,255,255,.8)}
+  .mode.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+  .mode.ghost .ic{background:var(--indigoSoft)}
+  .mode.ghost .tt span{color:var(--sub)}
+  .mode:disabled{opacity:.6;cursor:default}
+  .foot{text-align:center;margin-top:18px;font-size:11.5px;color:var(--sub);line-height:1.5}
+
+  .tb{display:flex;align-items:center;justify-content:space-between}
+  .chip-sec{font-size:12px;color:var(--indigo);background:var(--indigoSoft);padding:4px 10px;border-radius:20px;font-weight:600}
+  .count{font-size:13px;color:var(--sub);min-width:44px;text-align:right}
+  .tbbar{height:5px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:10px}
+  .tbbar > i{display:block;height:100%;background:var(--indigo);transition:width .35s}
+
+  .pcard{padding:20px 20px;margin-top:12px}
+  .plabel{font-size:12px;color:var(--sub);letter-spacing:1px;margin-bottom:8px}
+  .pg{margin:0 0 9px;font-family:var(--serif);font-size:16px;line-height:2.0;color:var(--ink)}
+  .pg:last-child{margin-bottom:0}
+  .qtext{font-size:15px;font-weight:700;margin-top:18px;line-height:1.65;font-family:var(--serif)}
+
+  .opts{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+  .opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:var(--paper);
+    border:1.5px solid var(--line);border-radius:13px;padding:12px 14px;transition:background .15s,border-color .15s}
+  .opt .n{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:8px;
+    background:var(--indigoSoft);color:var(--indigo);font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .opt .txt{font-family:var(--serif);font-size:16px;line-height:1.65}
+  .opt.correct{background:var(--greenSoft);border-color:var(--green)}
+  .opt.wrong{background:var(--redSoft);border-color:var(--red)}
+  .opt.dim{opacity:.9}
+  .opt.dim .txt{color:var(--sub)}
+  .opt.locked{cursor:default}
+  .optnote{font-size:12.5px;color:var(--sub);padding:6px 8px 0 46px;line-height:1.5}
+  .optnote.bad{color:var(--red)}
+
+  .expl{margin-top:16px;background:var(--indigoSoft);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .keybox{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:10px;padding:10px 12px}
+  .keybox .klbl{font-size:11px;color:var(--amber);letter-spacing:1px;font-weight:700}
+  .keybox .kjp{font-family:var(--serif);font-size:15px;color:var(--ink);margin-top:4px;line-height:1.8}
+  .keybox .kvi{font-size:12.5px;color:var(--sub);margin-top:4px;line-height:1.55}
+  .expl .ln{font-size:13.5px;line-height:1.62;margin-top:9px}
+  .expl .ln b{color:var(--indigo)}
+  .expl hr{border:none;border-top:1px solid var(--line);margin:11px 0}
+  .cta{margin-top:16px;width:100%;background:var(--indigo);color:#fff;border:none;border-radius:14px;
+    padding:14px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+  .cta.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line);font-weight:600}
+
+  .flip{margin-top:12px;perspective:1200px}
+  .flip .inner{position:relative;min-height:340px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .flip.on .inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;
+    background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 3px rgba(20,30,50,.08);
+    padding:20px 18px;display:flex;flex-direction:column;justify-content:flex-start;overflow:auto}
+  .face.back{transform:rotateY(180deg);background:var(--indigo);border:none;justify-content:center}
+  .face .kick{font-size:12px;color:var(--sub);letter-spacing:1px;margin-bottom:10px}
+  .face .fpg{font-family:var(--serif);font-size:14px;line-height:1.95;margin:0 0 7px}
+  .face .fq{font-family:var(--serif);font-size:14.5px;font-weight:700;margin-top:10px;line-height:1.55}
+  .face .tap{margin-top:12px;font-size:12px;color:var(--sub)}
+  .face.back .kick{color:rgba(255,255,255,.7)}
+  .face.back .ans{font-family:var(--serif);font-size:16px;color:#fff;line-height:1.7}
+  .face.back hr{border:none;border-top:1px solid rgba(255,255,255,.25);margin:12px 0}
+  .face.back .ln{font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.55;margin-top:6px}
+  .face.back .ln b{color:#fff}
+  .marks{display:flex;gap:10px;margin-top:16px}
+  .mark{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:14px;font-size:15px;font-weight:700}
+  .mark.no{background:var(--redSoft);color:var(--red);border:1.5px solid var(--red)}
+  .mark.yes{background:var(--greenSoft);color:var(--green);border:1.5px solid var(--green)}
+
+  .done{text-align:center;padding-top:20px}
+  .score{font-family:var(--serif);font-size:56px;font-weight:700;color:var(--indigo);margin-top:6px;line-height:1}
+  .score small{font-size:26px;color:var(--sub)}
+  .wrongbox{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:22px;text-align:left}
+  .wrongrow{display:flex;align-items:center;gap:10px;font-size:14px}
+  .wrongrow .n{width:24px;height:24px;border-radius:7px;background:var(--redSoft);color:var(--red);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+
+<script>
+/* ============ DATA (2024/12 · 問題8 · Q45–48 · 読解) ============
+   type "reading": đoạn ngắn + 1 câu hỏi. \n = ngắt đoạn. Furigana 漢字[よみ]. */
+var DATA = [
+ {id:"q45",no:45,sec:"読解",type:"reading",label:"(1)",
+  passage:
+   "どんな社会[しゃかい]にも、「情報通[じょうほうつう]」と呼[よ]ばれる人[ひと]がいます。\n"+
+   "「物知[ものし]り」とは違[ちが]います。多[おお]くの場合[ばあい]は、「情報[じょうほう]に通[つう]じた人[ひと]」つまり、どこにいけば情報[じょうほう]があるのかを知[し]っている人[ひと]を指[さ]します。\n"+
+   "どんなに知識[ちしき]の豊[ゆた]かな人[ひと]でも、知[し]っている分野[ぶんや]や程度[ていど]にはかぎりがあります。けれども、ある分野[ぶんや]については、人並[ひとな]み以上[いじょう]によく知[し]っている人[ひと]は少[すく]なくありません。\n"+
+   "「この問題[もんだい]については、○○さんが詳[くわ]しい」\n"+
+   "「この問題[もんだい]なら、○○さんに聞[き]けばわかる」\n"+
+   "そうした引[ひ]き出[だ]しを、人並[ひとな]み以上[いじょう]にもっている人[ひと]が「情報通[じょうほうつう]」なのです。",
+  question:"筆者[ひっしゃ]によると、「情報通[じょうほうつう]」とはどのような人[ひと]か。",
+  options:[
+   {t:"幅広[はばひろ]い分野[ぶんや]で人並[ひとな]み以上[いじょう]の情報[じょうほう]をもっている人[ひと]",note:"Sai — bài nói kiến thức ai cũng có giới hạn; 情報通 không phải người tự có nhiều thông tin ở nhiều lĩnh vực"},
+   {t:"何[なに]が自分[じぶん]にとって必要[ひつよう]な情報[じょうほう]かをよく理解[りかい]している人[ひと]",note:"Sai — không nói về việc hiểu “mình cần thông tin gì”"},
+   {t:"誰[だれ]が必要[ひつよう]な情報[じょうほう]をもっているかをよく把握[はあく]している人[ひと]"},
+   {t:"情報[じょうほう]をもっている人[ひと]を見[み]つけて、問題[もんだい]解決[かいけつ]ができる人[ひと]",note:"Gần đúng nhưng trọng tâm là “biết AI/Ở ĐÂU có thông tin”, không phải khả năng giải quyết vấn đề"}
+  ],correct:2,
+  key:"どこにいけば情報[じょうほう]があるのかを知[し]っている人[ひと]",
+  keyTrans:"…người biết cứ đến đâu thì có được thông tin (○○さんに聞けばわかる).",
+  point:"情報通 = người nắm rõ AI / Ở ĐÂU có thông tin cần thiết (nhiều “đầu mối”), chứ không phải người tự mình biết nhiều.",
+  trans:"Trong bất kỳ xã hội nào cũng có những người được gọi là “người thạo tin” (情報通). Nó khác với “người hiểu biết rộng” (物知り). Phần lớn trường hợp, đó là “người thông thạo thông tin”, tức người biết cứ đến đâu thì có được thông tin. Dù kiến thức phong phú đến mấy, lĩnh vực và mức độ hiểu biết cũng có giới hạn. Nhưng không hiếm người ở một lĩnh vực nào đó lại biết hơn hẳn người thường. “Chuyện này thì anh ○○ rành”, “Vấn đề này cứ hỏi anh ○○ là ra” — người có nhiều “ngăn kéo” (đầu mối) như vậy hơn người thường chính là “người thạo tin”."},
+
+ {id:"q46",no:46,sec:"読解",type:"reading",label:"(2)",
+  passage:
+   "人間[にんげん]の感覚[かんかく]がいかにあてにならないものかを示[しめ]す有名[ゆうめい]な実験[じっけん]があります。\n"+
+   "まず、三[みっ]つの容器[ようき]に冷[つめ]たい水[みず]とぬるま湯[ゆ]、それに熱[あつ]いお湯[ゆ]を用意[ようい]します。はじめに右手[みぎて]を冷[つめ]たい水[みず]に、左手[ひだりて]を熱[あつ]いお湯[ゆ]に、同時[どうじ]につけます。しばらくつけたら、今度[こんど]は両手[りょうて]を同時[どうじ]にぬるま湯[ゆ]につけてみます。すると、冷[つめ]たい水[みず]に慣[な]れた右手[みぎて]は温[あたた]かと感[かん]じ、熱[あつ]いお湯[ゆ]に慣[な]れた左手[ひだりて]は同[おな]じぬるま湯[ゆ]を冷[つめ]たいと感[かん]じるでしょう。人間[にんげん]の感覚[かんかく]は同[おな]じ身体[からだ]の一部[いちぶ]でさえも、ちがう意味[いみ]を受[う]け取[と]ってしまうのです。",
+  question:"手[て]の感覚[かんかく]について、実験[じっけん]からどのようなことが分[わ]かったか。",
+  options:[
+   {t:"熱[あつ]いお湯[ゆ]や冷[つめ]たい水[みず]につけ続[つづ]けていると、温度[おんど]が感[かん]じられなくなる",note:"Sai — thí nghiệm không nói “ngâm lâu thì hết cảm nhận nhiệt độ”"},
+   {t:"冷[つめ]たい水[みず]のあとより熱[あつ]いお湯[ゆ]のあとにつけたほうが、ぬるま湯[ゆ]を温[あたた]かく感[かん]じる",note:"Ngược — sau nước LẠNH mới thấy ấm; sau nước NÓNG lại thấy lạnh"},
+   {t:"先[さき]につけていた水[みず]やお湯[ゆ]の温度[おんど]より、ぬるま湯[ゆ]の温度[おんど]のほうが低[ひく]く感[かん]じる",note:"Chỉ đúng với tay ngâm nước nóng, không phải quy luật chung"},
+   {t:"先[さき]につけていた水[みず]やお湯[ゆ]の温度[おんど]によって、ぬるま湯[ゆ]の温度[おんど]の感[かん]じ方[かた]が変[か]わる"}
+  ],correct:3,
+  key:"冷[つめ]たい水[みず]に慣[な]れた右手[みぎて]は温[あたた]かと感[かん]じ、熱[あつ]いお湯[ゆ]に慣[な]れた左手[ひだりて]は…冷[つめ]たいと感[かん]じる",
+  keyTrans:"Tay quen nước lạnh thấy nước ấm là ấm; tay quen nước nóng thấy cùng nước ấm đó là lạnh.",
+  point:"Cùng một cốc nước ấm nhưng cảm nhận thay đổi TÙY nhiệt độ tay đã ngâm trước đó → đáp án 4.",
+  trans:"Có một thí nghiệm nổi tiếng cho thấy giác quan con người thiếu tin cậy đến mức nào. Trước hết, chuẩn bị ba bình đựng nước lạnh, nước ấm và nước nóng. Đầu tiên nhúng đồng thời tay phải vào nước lạnh, tay trái vào nước nóng. Nhúng một lúc rồi nhúng cả hai tay cùng lúc vào nước ấm. Khi đó, tay phải đã quen nước lạnh sẽ thấy ấm, còn tay trái đã quen nước nóng lại thấy chính nước ấm đó là lạnh. Giác quan con người, ngay cả ở các phần của cùng một cơ thể, cũng tiếp nhận những ý nghĩa khác nhau."},
+
+ {id:"q47",no:47,sec:"読解",type:"reading",label:"(3)",
+  passage:
+   "自動車[じどうしゃ]が自動的[じどうてき]に運転[うんてん]されることになれば、それは完全[かんぜん]に単[たん]なる移動[いどう]手段[しゅだん]となり、運転[うんてん]することの娯楽性[ごらくせい]は存在[そんざい]しなくなる。人間[にんげん]が自分[じぶん]で自動車[じどうしゃ]を運転[うんてん]する楽[たの]しさというものは、安全[あんぜん]や利便性[りべんせい]とのトレードオフとして、なくなってしかるべきものなのだろうか。人間[にんげん]を害[がい]するリスクのある非合理[ひごうり]な娯楽性[ごらくせい]は、自動[じどう]運転車[うんてんしゃ]とともになくなってしまえばいいと割[わ]り切[き]ってしまう前[まえ]に、安全性[あんぜんせい]と娯楽性[ごらくせい]が両立[りょうりつ]する解[かい]はあると信[しん]じたい。",
+  question:"自動[じどう]運転車[うんてんしゃ]の登場[とうじょう]について、筆者[ひっしゃ]はどのように考[かんが]えているか。",
+  options:[
+   {t:"安全[あんぜん]や便利[べんり]さも重要[じゅうよう]ではあるが、自分[じぶん]で運転[うんてん]する楽[たの]しさは失[うしな]いたくない"},
+   {t:"安全性[あんぜんせい]と娯楽性[ごらくせい]の共存[きょうぞん]が望[のぞ]ましいが、実現[じつげん]は難[むずか]しい",note:"Sai — tác giả TIN là có lời giải chung sống được (信じたい), không cho là “khó thực hiện”"},
+   {t:"娯楽性[ごらくせい]がなくなるが、安全[あんぜん]や便利[べんり]さのためには許容[きょよう]せざるをえない",note:"Ngược — tác giả không cam chịu mất tính giải trí"},
+   {t:"娯楽性[ごらくせい]を犠牲[ぎせい]にしてまで、運転[うんてん]の自動化[じどうか]を進[すす]めてはいけない",note:"Quá mạnh — tác giả không phản đối tự động hóa, chỉ muốn giữ được cả hai"}
+  ],correct:0,
+  key:"安全性[あんぜんせい]と娯楽性[ごらくせい]が両立[りょうりつ]する解[かい]はあると信[しん]じたい。",
+  keyTrans:"Tôi muốn tin rằng vẫn có lời giải để an toàn và tính giải trí cùng tồn tại.",
+  point:"Tác giả coi trọng an toàn/tiện lợi nhưng KHÔNG muốn đánh mất thú lái xe, và tin có thể dung hòa → đáp án 1.",
+  trans:"Nếu ô tô được vận hành tự động thì nó hoàn toàn chỉ còn là phương tiện di chuyển, và tính giải trí của việc lái xe sẽ không còn. Liệu cái thú tự mình lái xe có phải là thứ đương nhiên phải mất đi, như một sự đánh đổi với an toàn và tiện lợi? Trước khi vội kết luận rằng cái thú giải trí phi lý và có nguy cơ gây hại cho con người ấy cứ biến mất cùng xe tự lái là được, tôi muốn tin rằng vẫn có lời giải để an toàn và tính giải trí cùng tồn tại."},
+
+ {id:"q48",no:48,sec:"読解",type:"reading",label:"(4)",
+  passage:
+   "翻訳[ほんやく]という作業[さぎょう]は音楽[おんがく]の演奏[えんそう]に似[に]ている。作家[さっか]は作曲家[さっきょくか]に、翻訳家[ほんやくか]は演奏家[えんそうか]に、それぞれたとえることができるのではないか。前[まえ]から、ひそかにそう考[かんが]えていた。\n"+
+   "新[あたら]しい世界観[せかいかん]を提示[ていじ]するために構成[こうせい]を練[ね]り、一[ひと]つ一[ひと]つの言葉[ことば]や音[おと]を吟味[ぎんみ]して組[く]み立[た]てていく作家[さっか]＝作曲家[さっきょくか]。かたや、作者[さくしゃ]に寄[よ]りそうようにして意味[いみ]を汲[く]み、原作[げんさく]や楽譜[がくふ]を丹念[たんねん]にたどってその世界[せかい]を再現[さいげん]してみせる翻訳家[ほんやくか]＝演奏家[えんそうか]。同[おな]じ楽譜[がくふ]をもとにしていても、演奏家[えんそうか]によって、生[う]み出[だ]される曲[きょく]の印象[いんしょう]がまるで違[ちが]うことがあるように、小説[しょうせつ]や詩[し]も、翻訳家[ほんやくか]の個性[こせい]や解釈[かいしゃく]によって、何種類[なんしゅるい]もの異[こと]なる翻訳[ほんやく]が存在[そんざい]することがありうる。",
+  question:"筆者[ひっしゃ]は、翻訳[ほんやく]のどのような点[てん]が音楽[おんがく]の演奏[えんそう]と似[に]ていると述[の]べているか。",
+  options:[
+   {t:"原作[げんさく]を丹念[たんねん]にたどっても、作家[さっか]の世界観[せかいかん]が再現[さいげん]されない可能性[かのうせい]がある点[てん]",note:"Không phải ý này — đoạn nói về sự đa dạng, không phải “không tái hiện được”"},
+   {t:"同[おな]じ原作[げんさく]を翻訳[ほんやく]しても、出来上[できあ]がった翻訳[ほんやく]が多様[たよう]になりうる点[てん]"},
+   {t:"翻訳家[ほんやくか]の個性[こせい]により、異[こと]なる作家[さっか]の作品[さくひん]でも似[に]た印象[いんしょう]になりうる点[てん]",note:"Ngược — cá tính dịch giả làm bản dịch KHÁC nhau, không phải giống nhau"},
+   {t:"翻訳家[ほんやくか]次第[しだい]で、さまざまな世界観[せかいかん]が生[う]み出[だ]される可能性[かのうせい]がある点[てん]",note:"Bẫy — cái tạo ra là nhiều BẢN DỊCH khác nhau, không phải “thế giới quan” mới (世界観 là của tác giả)"}
+  ],correct:1,
+  key:"同[おな]じ楽譜[がくふ]をもとにしていても…印象[いんしょう]がまるで違[ちが]う…何種類[なんしゅるい]もの異[こと]なる翻訳[ほんやく]が存在[そんざい]することがありうる。",
+  keyTrans:"Cùng một bản nhạc mà mỗi nghệ sĩ cho ấn tượng khác nhau; tiểu thuyết/thơ cũng vậy, có thể có nhiều bản dịch khác nhau.",
+  point:"Điểm giống nhau: cùng một “bản gốc” (nhạc phổ / nguyên tác) nhưng qua người thể hiện (nghệ sĩ / dịch giả) cho ra nhiều kết quả đa dạng → đáp án 2.",
+  trans:"Công việc dịch thuật giống với việc biểu diễn âm nhạc. Có thể ví tác giả với nhà soạn nhạc, dịch giả với nghệ sĩ biểu diễn — tôi vẫn thầm nghĩ vậy từ trước. Nhà văn = nhà soạn nhạc: nhào nặn bố cục để trình hiện một thế giới quan mới, cân nhắc từng con chữ, từng nốt nhạc mà dựng nên. Còn dịch giả = nghệ sĩ biểu diễn: áp sát ý tác giả để chắt lấy ý nghĩa, lần theo tỉ mỉ nguyên tác hay bản nhạc để tái hiện thế giới ấy. Cũng như cùng một bản nhạc mà qua mỗi nghệ sĩ, ấn tượng bản nhạc tạo ra có thể khác hẳn, tiểu thuyết hay thơ cũng vậy — tùy cá tính và cách diễn giải của dịch giả mà có thể tồn tại nhiều bản dịch khác nhau."}
+];
+
+var MASTER = 4;
+
+/* ============ STORAGE ============ */
+var KEY = "n1-2024-12-mondai-8";
+var mem = {};
+function loadProgress(cb){
+  var p = {};
+  try { var raw = localStorage.getItem(KEY); if (raw) p = JSON.parse(raw); }
+  catch(e){ p = mem; }
+  cb(p || {});
+}
+function saveProgress(p){ mem = p; try { localStorage.setItem(KEY, JSON.stringify(p)); } catch(e){} }
+
+/* ============ STATE ============ */
+var S = { prog:{}, view:"home", order:[], pos:0, sel:null, revealed:false, flipped:false, results:[] };
+var app = document.getElementById("app");
+
+function nextBox(box, ok){ return ok ? Math.min(5,(box||0)+1) : 1; }
+function stampColor(box){ if(!box) return "var(--stampNew)"; if(box>=MASTER) return "var(--indigo)"; if(box===3) return "var(--amber)"; return "var(--red)"; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function furi(s){ s = esc(s); return s.replace(/([\u4e00-\u9fff々〆ヶ]+)\[([\u3040-\u30ffー]+)\]/g,'<ruby>$1<rt>$2</rt></ruby>'); }
+function passageHTML(item, cls){
+  return item.passage.split("\n").map(function(p){ return '<p class="'+(cls||"pg")+'">'+furi(p)+'</p>'; }).join("");
+}
+
+function updateItem(id, ok){
+  var cur = S.prog[id] || {box:0,seen:0,correct:0,wrong:0};
+  S.prog[id] = { box: nextBox(cur.box,ok), seen:cur.seen+1, correct:cur.correct+(ok?1:0), wrong:cur.wrong+(ok?0:1) };
+  saveProgress(S.prog);
+}
+function mastered(){ var n=0; DATA.forEach(function(d){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)>=MASTER) n++; }); return n; }
+function weakIdx(){ var r=[]; DATA.forEach(function(d,i){ if(((S.prog[d.id]&&S.prog[d.id].box)||0)<MASTER) r.push(i); }); return r; }
+
+/* ============ ICONS ============ */
+var IC = {
+  check:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';},
+  x:function(c){return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';},
+  back:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';},
+  fwd:function(c){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';},
+  reset:function(c){return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>';},
+  quiz:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>';},
+  cards:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="16" rx="2"/><path d="M7 5V3.5A1.5 1.5 0 0 1 8.5 2H19a2 2 0 0 1 2 2v13"/></svg>';},
+  focus:function(c){return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>';}
+};
+
+/* ============ RENDER: HOME ============ */
+function renderHome(){
+  var m = mastered(), weak = weakIdx(), pct = Math.round(m/DATA.length*100);
+  var tiles = DATA.map(function(d,i){
+    var box = (S.prog[d.id]&&S.prog[d.id].box)||0, done = box>=MASTER, c = stampColor(box);
+    var dot = (!done && box>0) ? '<span class="dot" style="background:'+c+'"></span>' : '';
+    var style = done ? '' : ('color:'+c);
+    return '<button class="tile'+(done?' done':'')+'" data-tile="'+i+'" style="'+style+'">'+d.no+dot+'</button>';
+  }).join("");
+  var focusEnabled = weak.length>0;
+  app.innerHTML =
+   '<div class="fade">'+
+    '<div class="row" style="justify-content:space-between;align-items:flex-end;margin-bottom:18px">'+
+      '<div><div class="brand">藍 <small>N1 記憶帳</small></div>'+
+      '<div class="sub13">2024/12 · 問題8 · 読解 (Q45–48)</div></div>'+
+      '<button class="link" data-act="reset" title="Xóa tiến độ">'+IC.reset("#71787f")+' Đặt lại</button>'+
+    '</div>'+
+    '<div class="card map">'+
+      '<div class="top"><span class="lbl">BẢN ĐỒ TRÍ NHỚ</span>'+
+        '<span style="font-size:13px"><b style="color:var(--indigo);font-size:16px">'+m+'</b> / '+DATA.length+' đã thuộc</span></div>'+
+      '<div class="grid">'+tiles+'</div>'+
+      '<div class="bar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="legend">'+
+        '<span><i class="sw" style="background:var(--stampNew)"></i>Chưa học</span>'+
+        '<span><i class="sw" style="background:var(--red)"></i>Còn yếu</span>'+
+        '<span><i class="sw" style="background:var(--amber)"></i>Gần thuộc</span>'+
+        '<span><i class="sw" style="background:var(--indigo)"></i>Đã thuộc</span>'+
+      '</div>'+
+    '</div>'+
+    '<div class="modes">'+
+      modeBtn("primary","quiz",IC.quiz("#fff"),"Luyện đề","Đọc 4 đoạn, chọn đáp án rồi xem câu chốt + dịch",false)+
+      modeBtn("ghost","flash",IC.cards("#213a6b"),"Ôn nhanh","Lật lại 4 câu: câu hỏi ↔ câu chốt + đáp án",false)+
+      modeBtn("ghost","focus",IC.focus(focusEnabled?"#c1553c":"#71787f"),
+        focusEnabled?("Ôn câu yếu ("+weak.length+")"):"Ôn câu yếu",
+        focusEnabled?"Chỉ ôn lại những đoạn bạn còn sai":"Tuyệt vời — chưa có đoạn nào cần ôn thêm",
+        !focusEnabled)+
+    '</div>'+
+    '<div class="foot">Đọc kỹ đoạn văn (có furigana), chọn đáp án. Chạm ô trên bản đồ để ôn riêng.</div>'+
+   '</div>';
+
+  app.querySelectorAll("[data-tile]").forEach(function(b){ b.addEventListener("click",function(){ startFlash([parseInt(b.getAttribute("data-tile"),10)]); }); });
+  bind("[data-act=reset]", function(){
+    if (typeof window!=="undefined" && window.confirm && !window.confirm("Xóa toàn bộ tiến độ đã lưu?")) return;
+    S.prog={}; saveProgress({}); renderHome();
+  });
+  bind("[data-mode=quiz]", startQuiz);
+  bind("[data-mode=flash]", function(){ startFlash(DATA.map(function(_,i){return i;})); });
+  var fb = app.querySelector("[data-mode=focus]");
+  if (fb && focusEnabled) fb.addEventListener("click", function(){ startFlash(weak); });
+}
+function modeBtn(kind,mode,icon,title,sub,disabled){
+  var ig = kind==="primary"?"rgba(255,255,255,.85)":"#213a6b";
+  var arrow = disabled?"":IC.fwd(ig);
+  return '<button class="mode '+kind+'" data-mode="'+mode+'"'+(disabled?" disabled":"")+'>'+
+    '<span class="ic">'+icon+'</span>'+
+    '<span class="tt"><b>'+title+'</b><span>'+sub+'</span></span>'+arrow+'</button>';
+}
+
+/* ============ RENDER: QUIZ ============ */
+function renderQuiz(){
+  var item = DATA[S.order[S.pos]];
+  var pct = Math.round((S.pos + (S.revealed?1:0))/S.order.length*100);
+  var opts = item.options.map(function(o,i){
+    var cls="opt", noteHTML="";
+    if(S.revealed){
+      cls+=" locked";
+      if(i===item.correct){ cls+=" correct"; }
+      else if(i===S.sel){ cls+=" wrong"; if(o.note) noteHTML='<div class="optnote bad">'+esc(o.note)+'</div>'; }
+      else { cls+=" dim"; if(o.note) noteHTML='<div class="optnote">'+esc(o.note)+'</div>'; }
+    }
+    var nbadge = (S.revealed && i===item.correct) ? IC.check("#1f8f63")
+               : (S.revealed && i===S.sel) ? IC.x("#c1553c") : (i+1);
+    var nStyle = (S.revealed && (i===item.correct||i===S.sel)) ? "background:transparent" : "";
+    return '<div><button class="'+cls+'" data-opt="'+i+'"'+(S.revealed?" disabled":"")+'>'+
+      '<span class="n" style="'+nStyle+'">'+nbadge+'</span>'+
+      '<span class="txt">'+furi(o.t)+'</span></button>'+noteHTML+'</div>';
+  }).join("");
+
+  var expl = S.revealed ? (
+    '<div class="expl fade">'+
+      '<div class="keybox"><div class="klbl">CÂU CHỐT</div>'+
+        '<div class="kjp">'+furi(item.key)+'</div>'+
+        '<div class="kvi">'+esc(item.keyTrans)+'</div></div>'+
+      '<div class="ln"><b>Vì sao · </b>'+esc(item.point)+'</div>'+
+      '<hr><div class="ln"><b>Dịch đoạn · </b>'+esc(item.trans)+'</div>'+
+    '</div>'+
+    '<button class="cta" data-act="next">'+(S.pos+1>=S.order.length?"Xem kết quả":"Đoạn tiếp theo")+' '+IC.fwd("#fff")+'</button>'
+  ) : "";
+
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="card pcard"><div class="plabel">文章 '+item.label+'</div>'+passageHTML(item)+'</div>'+
+    '<div class="qtext">'+furi(item.question)+'</div>'+
+    '<div class="opts">'+opts+'</div>'+expl+'</div>';
+
+  bind("[data-act=exit]", goHome);
+  if(!S.revealed){
+    app.querySelectorAll("[data-opt]").forEach(function(b){
+      b.addEventListener("click",function(){ answer(parseInt(b.getAttribute("data-opt"),10)); });
+    });
+  }
+  bind("[data-act=next]", nextQuiz);
+}
+
+/* ============ RENDER: FLASH ============ */
+function renderFlash(){
+  var item = DATA[S.order[S.pos]];
+  var pct = Math.round(S.pos/S.order.length*100);
+  var front = '<div class="kick">ĐỌC ĐOẠN '+item.label+' · Câu '+item.no+'</div>'+
+    passageHTML(item,"fpg")+
+    '<div class="fq">'+furi(item.question)+'</div>'+
+    '<div class="tap">Chạm để lật ↺</div>';
+  var back = '<div class="kick">ĐÁP ÁN</div>'+
+    '<div class="ans">'+furi(item.options[item.correct].t)+'</div><hr>'+
+    '<div class="ln"><b>Câu chốt:</b> '+esc(item.keyTrans)+'</div>'+
+    '<div class="ln">'+esc(item.point)+'</div>';
+  app.innerHTML = '<div class="fade">'+topbar(item.sec,S.pos,S.order.length,pct)+
+    '<div class="flip'+(S.flipped?" on":"")+'" data-act="flip"><div class="inner">'+
+      '<div class="face front">'+front+'</div>'+
+      '<div class="face back">'+back+'</div>'+
+    '</div></div>'+
+    '<div class="marks">'+
+      '<button class="mark no" data-mark="0">'+IC.x("#c1553c")+' Chưa chắc</button>'+
+      '<button class="mark yes" data-mark="1">'+IC.check("#1f8f63")+' Đã nắm</button>'+
+    '</div>'+
+    '<div class="foot">"Chưa chắc" đưa đoạn về đầu hàng ôn; "Đã nắm" nâng lên gần mức thuộc.</div>'+
+   '</div>';
+
+  bind("[data-act=exit]", goHome);
+  bind("[data-act=flip]", function(){ S.flipped=!S.flipped; app.querySelector(".flip").classList.toggle("on",S.flipped); });
+  app.querySelectorAll("[data-mark]").forEach(function(b){
+    b.addEventListener("click",function(e){ e.stopPropagation(); markFlash(b.getAttribute("data-mark")==="1"); });
+  });
+}
+
+/* ============ RENDER: DONE ============ */
+function renderDone(){
+  var ok = S.results.filter(function(r){return r.ok;}).length;
+  var wrong = S.results.filter(function(r){return !r.ok;});
+  var pct = Math.round(ok/S.results.length*100);
+  var wrongHTML;
+  if(wrong.length===0){
+    wrongHTML = '<div style="color:var(--green);font-weight:700;text-align:center">Trọn vẹn — không sai câu nào! 🎯</div>';
+  } else {
+    wrongHTML = '<div style="font-size:13px;color:var(--sub);margin-bottom:10px">Cần ôn lại '+wrong.length+' đoạn:</div>'+
+      '<div style="display:flex;flex-direction:column;gap:8px">'+
+      wrong.map(function(r){ var it=DATA[r.idx];
+        return '<div class="wrongrow"><span class="n">'+it.no+'</span>'+
+          '<span class="serif">Đoạn '+it.label+'</span>'+
+          '<span style="color:var(--sub);font-size:12.5px">· '+esc(it.keyTrans.slice(0,34))+'…</span></div>';
+      }).join("")+'</div>';
+  }
+  app.innerHTML = '<div class="done fade">'+
+    '<div class="lbl" style="letter-spacing:1px">KẾT QUẢ LUYỆN ĐỀ</div>'+
+    '<div class="score">'+ok+'<small>/'+S.results.length+'</small></div>'+
+    '<div class="muted" style="font-size:14px;margin-top:4px">đúng '+pct+'%</div>'+
+    '<div class="wrongbox">'+wrongHTML+'</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">'+
+      (wrong.length>0?'<button class="cta" data-act="review">Ôn lại '+wrong.length+' đoạn sai</button>':'')+
+      '<button class="cta ghost" data-act="home">Về trang chủ</button>'+
+    '</div></div>';
+  bind("[data-act=review]", function(){ var w=S.results.filter(function(r){return !r.ok;}).map(function(r){return r.idx;}); startFlash(w.length?w:DATA.map(function(_,i){return i;})); });
+  bind("[data-act=home]", goHome);
+}
+
+/* ============ SHARED ============ */
+function topbar(sec,pos,total,pct){
+  return '<div class="tb"><button class="link" data-act="exit">'+IC.back("#71787f")+' Thoát</button>'+
+    '<span class="chip-sec">問題 '+sec+'</span>'+
+    '<span class="count">'+(pos+1)+' / '+total+'</span></div>'+
+    '<div class="tbbar"><i style="width:'+pct+'%"></i></div>';
+}
+function bind(sel, fn){ var el=app.querySelector(sel); if(el) el.addEventListener("click",fn); }
+
+/* ============ ACTIONS ============ */
+function goHome(){ S.view="home"; renderHome(); }
+function startQuiz(){ S.order=DATA.map(function(_,i){return i;}); S.pos=0; S.sel=null; S.revealed=false; S.results=[]; S.view="quiz"; renderQuiz(); }
+function startFlash(idxs){ S.order=(idxs&&idxs.length)?idxs:DATA.map(function(_,i){return i;}); S.pos=0; S.flipped=false; S.view="flash"; renderFlash(); }
+function answer(i){
+  if(S.revealed) return;
+  var item=DATA[S.order[S.pos]]; var ok=(i===item.correct);
+  S.sel=i; S.revealed=true; updateItem(item.id,ok); S.results.push({idx:S.order[S.pos],ok:ok});
+  renderQuiz();
+}
+function nextQuiz(){
+  if(S.pos+1>=S.order.length){ S.view="done"; renderDone(); return; }
+  S.pos++; S.sel=null; S.revealed=false; renderQuiz();
+}
+function markFlash(ok){
+  var item=DATA[S.order[S.pos]]; updateItem(item.id,ok);
+  if(S.pos+1>=S.order.length){ goHome(); return; }
+  S.pos++; S.flipped=false; renderFlash();
+}
+
+/* ============ BOOT ============ */
+loadProgress(function(p){ S.prog=p||{}; if(typeof location!=="undefined" && location.hash.indexOf("focus")>=0){ var w=weakIdx(); if(w.length){ startFlash(w); return; } } renderHome(); });
+</script>
+</body>
+</html>

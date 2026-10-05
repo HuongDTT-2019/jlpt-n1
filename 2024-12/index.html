@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>藍 N1 記憶帳 — Khóa luyện đề</title>
+<style>
+  :root{
+    --bg:#eceef2; --paper:#fff; --ink:#1b232e; --sub:#71787f; --line:#e2e5ea;
+    --indigo:#213a6b; --indigoSoft:#e9edf6; --green:#1f8f63; --amber:#c58a24;
+    --serif:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS Mincho",serif;
+    --sans:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);
+    padding:24px 14px calc(48px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  .wrap{max-width:520px;margin:0 auto}
+  a{text-decoration:none;color:inherit}
+  .brand{font-family:var(--serif);font-size:34px;font-weight:700;color:var(--indigo);letter-spacing:1px}
+  .brand small{font-size:16px;color:var(--sub);font-family:var(--sans);letter-spacing:0}
+  .tag{font-size:13px;color:var(--sub);margin-top:4px}
+  .intro{font-size:13.5px;color:var(--sub);line-height:1.6;margin:14px 2px 20px}
+  .sechead{font-size:12px;letter-spacing:1px;color:var(--sub);margin:0 2px 10px}
+  .list{display:flex;flex-direction:column;gap:10px}
+  .buoi{display:flex;align-items:center;gap:14px;background:var(--paper);border:1px solid var(--line);
+    border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgba(20,30,50,.06)}
+  .buoi.locked{opacity:.62}
+  .buoi.ready{cursor:pointer;transition:transform .12s,box-shadow .12s}
+  .buoi.ready:active{transform:scale(.99)}
+  .num{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-size:19px;font-weight:700}
+  .num.on{background:var(--indigo);color:#fff}
+  .num.off{background:var(--indigoSoft);color:var(--indigo)}
+  .body{flex:1;min-width:0}
+  .ttl{font-size:15.5px;font-weight:700}
+  .meta{font-size:12.5px;color:var(--sub);margin-top:2px}
+  .right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+  .prog{font-size:12px;font-weight:700;color:var(--green)}
+  .prog.none{color:var(--sub);font-weight:600}
+  .soon{font-size:11.5px;color:var(--sub);background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:3px 9px}
+  .arrow{color:var(--indigo)}
+  .foot{margin-top:26px;font-size:11.5px;color:var(--sub);line-height:1.6;text-align:center}
+  .foot code{background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">藍 <small>N1 記憶帳</small></div>
+  <div class="tag"><a href="../index.html" style="color:var(--sub);text-decoration:none">← Tất cả các đề</a> · Khóa luyện N1 · 2024/12</div>
+  <p class="intro">Mỗi buổi ≈ 1 tiếng: làm đề → phân tích ngay → lật thẻ chốt. Tiến độ tự lưu trên máy của bạn, mở lại lần sau vẫn còn nguyên bản đồ trí nhớ.</p>
+
+  <div class="sechead">文字・語彙・文法・読解</div>
+  <div class="list" id="list"></div>
+
+  <div class="foot">
+    Cùng học? Chia sẻ link trang này. Mỗi người có tiến độ riêng trên máy mình.<br>
+    Thêm buổi mới: bỏ file <code>buoi-0X.html</code> vào repo &amp; thêm một dòng trong <code>BUOI[]</code> của trang này.
+  </div>
+</div>
+
+<script>
+/* Danh sách buổi. status: "ready" (có link) | "soon".
+   key/total: dùng để đọc tiến độ đã lưu (localStorage) và hiển thị "đã thuộc". */
+var BUOI = [
+  { n:1, file:"n1-2024-12-mondai-1-2.html", status:"ready", jp:"文字・語彙 問題1–2", vi:"Đọc âm + điền từ", range:"Câu 1–13", key:"n1-2024-12-mondai-1-2", total:13 },
+  { n:2, file:"n1-2024-12-mondai-3-4.html", status:"ready", jp:"文字・語彙 問題3–4", vi:"Đồng nghĩa + cách dùng từ", range:"Câu 14–25", key:"n1-2024-12-mondai-3-4", total:12 },
+  { n:3, file:"n1-2024-12-mondai-5.html", status:"ready", jp:"文法 問題5", vi:"Chọn mẫu ngữ pháp", range:"Câu 26–35", key:"n1-2024-12-mondai-5", total:10 },
+  { n:4, file:"n1-2024-12-mondai-6-7.html", status:"ready", jp:"文法 問題6–7", vi:"Sắp xếp ★ + điền đoạn văn", range:"Câu 36–44", key:"n1-2024-12-mondai-6-7", total:9 },
+  { n:5, file:"n1-2024-12-mondai-8.html", status:"ready", jp:"読解 問題8", vi:"Đoạn ngắn", range:"Câu 45–48", key:"n1-2024-12-mondai-8", total:4 },
+  { n:6, file:"n1-2024-12-mondai-9.html", status:"ready", jp:"読解 問題9", vi:"Đoạn vừa (2 câu/đoạn)", range:"Câu 49–56", key:"n1-2024-12-mondai-9", total:8 },
+  { n:7, file:"n1-2024-12-mondai-10-11.html", status:"ready", jp:"読解 問題10–11", vi:"Đoạn dài + so sánh A/B", range:"Câu 57–61", key:"n1-2024-12-mondai-10-11", total:5 },
+  { n:8, file:"n1-2024-12-mondai-12-13.html", status:"ready", jp:"読解 問題12–13", vi:"Xã luận + tra thông tin", range:"Câu 62–66", key:"n1-2024-12-mondai-12-13", total:5 },
+  { n:9, file:"n1-2024-12-ontong.html", status:"ready", review:true, jp:"総復習 · Tổng ôn", vi:"Bản đồ 66 câu + ôn câu yếu toàn đề", range:"" }
+];
+var MASTER = 4;
+
+function mastered(key, total){
+  try{
+    var raw = localStorage.getItem(key); if(!raw) return 0;
+    var p = JSON.parse(raw), n = 0;
+    for(var k in p){ if(p[k] && p[k].box >= MASTER) n++; }
+    return n;
+  }catch(e){ return 0; }
+}
+function pad(n){ return (n<10?"0":"")+n; }
+
+var html = BUOI.map(function(b){
+  var isReady = b.status==="ready";
+  var right;
+  if(b.review){
+    right = '<div class="right"><span class="prog">Tổng ôn</span><span class="arrow">→</span></div>';
+  } else if(isReady){
+    var m = mastered(b.key, b.total);
+    var cls = m>0 ? "prog" : "prog none";
+    right = '<div class="right"><span class="'+cls+'">'+m+'/'+b.total+' thuộc</span>'+
+            '<span class="arrow">→</span></div>';
+  } else {
+    right = '<div class="right"><span class="soon">Sắp có</span></div>';
+  }
+  var inner =
+    '<div class="num '+(isReady?"on":"off")+'">'+b.n+'</div>'+
+    '<div class="body"><div class="ttl">Buổi '+b.n+' · '+b.jp+'</div>'+
+      '<div class="meta">'+b.vi+(b.range?' · '+b.range:'')+'</div></div>'+
+    right;
+  return isReady
+    ? '<a class="buoi ready" href="'+b.file+'">'+inner+'</a>'
+    : '<div class="buoi locked">'+inner+'</div>';
+}).join("");
+
+document.getElementById("list").innerHTML = html;
+</script>
+</body>
+</html>

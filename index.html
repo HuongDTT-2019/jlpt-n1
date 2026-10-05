@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>藍 N1 記憶帳 — Tủ đề JLPT N1</title>
+<style>
+  :root{
+    --bg:#eceef2; --paper:#fff; --ink:#1b232e; --sub:#71787f; --line:#e2e5ea;
+    --indigo:#213a6b; --indigoSoft:#e9edf6; --green:#1f8f63; --amber:#c58a24;
+    --serif:"Yu Mincho","Hiragino Mincho ProN","Noto Serif JP","MS Mincho",serif;
+    --sans:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);
+    padding:28px 14px calc(48px + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased}
+  .wrap{max-width:520px;margin:0 auto}
+  a{text-decoration:none;color:inherit}
+  .brand{font-family:var(--serif);font-size:36px;font-weight:700;color:var(--indigo);letter-spacing:1px}
+  .brand small{font-size:16px;color:var(--sub);font-family:var(--sans);letter-spacing:0}
+  .tag{font-size:13px;color:var(--sub);margin-top:4px}
+  .intro{font-size:13.5px;color:var(--sub);line-height:1.6;margin:14px 2px 22px}
+  .sechead{font-size:12px;letter-spacing:1px;color:var(--sub);margin:0 2px 12px;font-weight:700}
+  .list{display:flex;flex-direction:column;gap:12px}
+  .exam{display:flex;align-items:center;gap:16px;background:var(--paper);border:1px solid var(--line);
+    border-radius:18px;padding:18px 18px;box-shadow:0 1px 3px rgba(20,30,50,.06)}
+  .exam.locked{opacity:.6}
+  .exam.ready{cursor:pointer;transition:transform .12s}
+  .exam.ready:active{transform:scale(.99)}
+  .lvl{width:52px;height:52px;border-radius:14px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:var(--serif);font-weight:700;line-height:1}
+  .lvl.on{background:var(--indigo);color:#fff}
+  .lvl.off{background:var(--indigoSoft);color:var(--indigo)}
+  .lvl b{font-size:20px}
+  .lvl span{font-size:9px;margin-top:2px;letter-spacing:.5px;opacity:.85}
+  .body{flex:1;min-width:0}
+  .ttl{font-size:16px;font-weight:700}
+  .meta{font-size:12.5px;color:var(--sub);margin-top:2px}
+  .pbar{height:6px;border-radius:4px;background:var(--indigoSoft);overflow:hidden;margin-top:9px}
+  .pbar i{display:block;height:100%;background:var(--indigo)}
+  .right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:5px;text-align:right}
+  .prog{font-size:12px;font-weight:700;color:var(--green)}
+  .prog.none{color:var(--sub);font-weight:600}
+  .soon{font-size:11.5px;color:var(--sub);background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:3px 9px}
+  .arrow{color:var(--indigo);font-size:16px}
+  .foot{margin-top:28px;font-size:11.5px;color:var(--sub);line-height:1.7;text-align:center}
+  .foot code{background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">藍 <small>N1 記憶帳</small></div>
+  <div class="tag">Tủ đề luyện JLPT N1 · Osaka study group</div>
+  <p class="intro">Chọn một đề để vào luyện. Mỗi đề là một khóa 9 buổi (làm đề → phân tích → lật thẻ), tiến độ tự lưu riêng cho từng đề trên máy bạn.</p>
+
+  <div class="sechead">CÁC ĐỀ</div>
+  <div class="list" id="list"></div>
+
+  <div class="foot">
+    Thêm đề mới: tạo thư mục <code>YYYY-MM/</code>, bỏ bộ file của đề đó vào (tên file &amp; key có ngày thi),<br>
+    rồi thêm một dòng vào mảng <code>EXAMS[]</code> của trang này. Mỗi đề lưu tiến độ riêng, không đè nhau.
+  </div>
+</div>
+
+<script>
+var MASTER = 4;
+/* Mỗi đề một thư mục. keys = localStorage key của các buổi trong đề đó (để tính "đã thuộc"). */
+var EXAMS = [
+  { folder:"2024-12", level:"N1", label:"2024 · Tháng 12", desc:"文字・語彙・文法・読解 — 66 câu · 8 buổi", status:"ready",
+    total:66,
+    keys:["n1-2024-12-mondai-1-2","n1-2024-12-mondai-3-4","n1-2024-12-mondai-5","n1-2024-12-mondai-6-7",
+          "n1-2024-12-mondai-8","n1-2024-12-mondai-9","n1-2024-12-mondai-10-11","n1-2024-12-mondai-12-13"] }
+  // Ví dụ đề sau:
+  // ,{ folder:"2024-07", level:"N1", label:"2024 · Tháng 7", desc:"…", status:"soon" }
+];
+
+function masteredOf(keys){
+  var n=0;
+  (keys||[]).forEach(function(k){
+    try{ var r=localStorage.getItem(k); if(!r) return; var p=JSON.parse(r);
+      for(var id in p){ if(p[id] && p[id].box>=MASTER) n++; } }catch(e){}
+  });
+  return n;
+}
+
+var html = EXAMS.map(function(e){
+  var isReady = e.status==="ready";
+  var right, bar="";
+  if(isReady){
+    var m = masteredOf(e.keys), pct = e.total ? Math.round(m/e.total*100) : 0;
+    var cls = m>0 ? "prog" : "prog none";
+    right = '<div class="right"><span class="'+cls+'">'+m+'/'+(e.total||"?")+' thuộc</span><span class="arrow">→</span></div>';
+    bar = '<div class="pbar"><i style="width:'+pct+'%"></i></div>';
+  } else {
+    right = '<div class="right"><span class="soon">Sắp có</span></div>';
+  }
+  var inner =
+    '<div class="lvl '+(isReady?"on":"off")+'"><b>'+e.level+'</b><span>JLPT</span></div>'+
+    '<div class="body"><div class="ttl">'+e.label+'</div><div class="meta">'+e.desc+'</div>'+bar+'</div>'+
+    right;
+  return isReady
+    ? '<a class="exam ready" href="'+e.folder+'/index.html">'+inner+'</a>'
+    : '<div class="exam locked">'+inner+'</div>';
+}).join("");
+
+document.getElementById("list").innerHTML = html;
+</script>
+</body>
+</html>
